@@ -119,8 +119,8 @@ function handle_ls_certs(cmd) {
   });
 
   api.listCertificates(opt, function(error, data, response) {
-    if (error) exit_error(error.message);
-    console.log(JSON.stringify(data.certs, null, 2));
+    if (error) exit_api_error(error, response);
+    console.log(JSON.stringify(data, null, 2));
   });
 }
 
@@ -131,8 +131,8 @@ function handle_get_cert(sha256, cmd) {
   var api = new HardenizeOrgApi.CertificatesApi();
 
   api.retrieveACertificate(sha256, function(error, data, response) {
-    if (error) exit_error(error.message);
-    console.log(JSON.stringify(data.cert, null, 2));
+    if (error) exit_api_error(error, response);
+    console.log(JSON.stringify(data, null, 2));
   });
 }
 
@@ -150,7 +150,7 @@ function handle_upload_cert(cmd) {
   });
   process.stdin.on('end', function() {
     api.createACertificate(buffer, function(error, _, response) {
-      if (error) exit_error('API:', error.message);
+      if (error) exit_api_error(error, response);
       switch (response.status) {
         case 201: return console.log('Certificate successfully created');
         case 204: return console.log('Certificate already exists');
@@ -180,6 +180,14 @@ function setupApi(orgLabel) {
 
 function exit_error() {
   console.warn.apply(null, arguments);
+  process.exit(1);
+}
+
+function exit_api_error(error, response) {
+  console.warn(error.status + ' ' + error.message);
+  if (response.error && response.error.text) {
+      console.log(response.error.text);
+  }
   process.exit(1);
 }
 
