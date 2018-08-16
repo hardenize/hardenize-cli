@@ -29,10 +29,8 @@ program
 program
   .command('ls-certs')
   .option('-o, --org [org]',           'Organization. If not supplied, uses default organization')
-  .option('--active',                  'Include only active certificates')
-  .option('--no-active',               'Exclude active certificates')
-  .option('--expired',                 'Include only expired certificates')
-  .option('--no-expired',              'Exclude expired certificates')
+  .option('--active [yes/no]',         'Filter by active',  toBool('active'))
+  .option('--expired [yes/no]',        'Filter by expired', toBool('expired'))
   .option('--expireInDays <days>',     'Include only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp')
   .option('--host <host>',             'Include only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)')
   .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash')
@@ -190,7 +188,7 @@ function default_org() {
 }
 
 function read_config() {
-  let config = {};
+  var config = {};
   if (fs.existsSync(configPath)) {
     config = JSON.parse(fs.readFileSync(configPath));
   }
@@ -223,4 +221,12 @@ function migrate_config(config) {
   }
 
   return config;
+}
+
+function toBool(name) {
+  return function (val) {
+    if (val.match(/^(t(rue)?|y(es?)?|1)$/i)) return true;
+    if (val.match(/^(f(alse)?|no?|0)$/i))    return false;
+    exit_error('Invalid bool value passed to ' + name + '. Should be one of true/yes/false/no');
+  };
 }
