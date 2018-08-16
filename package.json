@@ -1,10 +1,14 @@
 {
   "name": "@hardenize/cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Hardenize Limited",
   "license": "Apache-2.0",
   "description": "Hardenize CLI Tool",
   "homepage": "https://www.hardenize.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hardenize/hardenize-cli.git"
+  },
   "bugs": {
     "url": "https://github.com/hardenize/hardenize-cli/issues"
   },
