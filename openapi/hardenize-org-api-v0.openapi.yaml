@@ -3,7 +3,7 @@ openapi: 3.0.0
 
 info:
   title:   Hardenize Org API
-  version: 0.1.1
+  version: 0.4.0
   description: |
     Hardenize is a platform for continuous monitoring of network
     and security configuration. Hardenize supports individual accounts,
@@ -42,9 +42,60 @@ paths:
 
     get:
       operationId: List certificates
-      summary: Returns a list of your certificates
+      summary: Returns a list of certificates
+      description: By default, this endpoint will return a list of all your certificates. If you provide one
+        of the optional parameters, only the certificates matching the specified filters will be listed. If
+        you provide multiple parameters, only the certificates matching all the specified filters will be listed.
       tags:
       - Certificates
+
+      parameters:
+
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+          example: true
+        description: If set, returns only active or inactive certificates
+
+      - name: expired
+        in: query
+        required: false
+        schema:
+          type: boolean
+          example: false
+        description: If set, returns only expired or non-expired certificates
+
+      - name: expireInDays
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: 14
+        description:
+          If set, returns only certificates that have already expired or expire in the specified
+          number of days, according to the effectiveNotAfter timestamp
+
+      - name: host
+        in: query
+        required: false
+        schema:
+          type: string
+          example: example.com
+        description:
+          If set, returns only certificates that are valid for the specified host, either
+          because they contain the exact hostname or because they are wildcards and contain the
+          parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)
+
+      - name: spkiSha256
+        in: query
+        required: false
+        schema:
+          type: string
+          example: 56c17eb4e3d510f7020e142cd36f617b38f93c26c72cc13dfebfbeed3e554382
+          pattern: "^[a-fA-F0-9]{64}$"
+        description: If set, returns only certificates whose public key (SPKI) matches the provided hash
 
       responses:
         '200':
@@ -235,19 +286,19 @@ components:
           type: string
           example: ECDSAwithSHA256
           enum:
-            - RSAwithMD2
-            - RSAwithMD5
-            - RSAwithSHA1
-            - RSAwithSHA256
-            - RSAwithSHA384
-            - RSAwithSHA512
-            - RSAPSS
-            - DSAwithSHA1
-            - DSAwithSHA256
-            - ECDSAwithSHA1
-            - ECDSAwithSHA256
-            - ECDSAwithSHA384
-            - ECDSAwithSHA512
+          - RSAwithMD2
+          - RSAwithMD5
+          - RSAwithSHA1
+          - RSAwithSHA256
+          - RSAwithSHA384
+          - RSAwithSHA512
+          - RSAPSS
+          - DSAwithSHA1
+          - DSAwithSHA256
+          - ECDSAwithSHA1
+          - ECDSAwithSHA256
+          - ECDSAwithSHA384
+          - ECDSAwithSHA512
           description: Certificate signature algorithm.
 
         spkiSha256:
@@ -297,6 +348,10 @@ components:
           type: boolean
           description: Indicates if this certificate has been seen installed on a server
 
+        active:
+          type: boolean
+          description: Indicates if this certificate has been seen installed recently
+
         precert:
           type: boolean
           example: false
@@ -330,12 +385,12 @@ components:
           type: string
           example: notSymantec
           enum:
-            - notSymantec
-            - phaseOneAffected
-            - phaseOneNotAffected
-            - phaseTwoAffected
-            - phaseTwoNotAffected
-            - symantecExcluded
+          - notSymantec
+          - phaseOneAffected
+          - phaseOneNotAffected
+          - phaseTwoAffected
+          - phaseTwoNotAffected
+          - symantecExcluded
           description: |
             Indicates if this certificate was issued from Symantec's PKI infrastructure.
 
@@ -361,58 +416,72 @@ components:
           description: Base64-encoded certificate in DER format
 
       required:
-        - sha256
-        - spikSha256
-        - hosts
-        - notBefore
-        - notAfter
-        - effectiveNotAfter
-        - revokedOn
-        - subject
-        - serial
-        - issuer
-        - hosts
-        - firstSeen
-        - lastSeen
-        - precert
-        - pem
+      - sha256
+      - spkiSha256
+      - hosts
+      - notBefore
+      - notAfter
+      - effectiveNotAfter
+      - revokedOn
+      - subject
+      - serial
+      - issuer
+      - hosts
+      - firstSeen
+      - lastSeen
+      - caPathLen
+      - wildcard
+      - selfSigned
+      - managed
+      - ownership
+      - seenInstalled
+      - active
+      - precert
+      - pem
+      - keyAlg
+      - sigAlg
+      - keyLen
+      - keyStrength
+      - ctLogs
+      - symantecStatus
+      - matchesOrgHost
 
     CertCtLog:
-     properties:
+      properties:
 
-       log:
-         type: string
-         example: ct.googleapis.com/rocketeer
-         description: CT log URL
+        log:
+          type: string
+          example: ct.googleapis.com/rocketeer
+          description: CT log URL
 
-       timestamp:
-         type: integer
-         format: int64
-         example: 1533791245857
-         description: Milliseconds since January 1, 1970, excluding leap seconds, per CT RFC.
+        timestamp:
+          type: integer
+          format: int64
+          example: 1533791245857
+          description: Milliseconds since January 1, 1970, excluding leap seconds, per CT RFC.
 
-       index:
-         type: integer
-         format: int64
-         example: 232455
-         description: This certificate's index in the referenced CT log.
+        index:
+          type: integer
+          format: int64
+          example: 232455
+          description: This certificate's index in the referenced CT log.
 
-       sources:
-         type: array
-         example: cert
-         description: |
-           Hardenize collects CT information from multiple sources. This set indicates
-           all the places where we've collected the information we have on a certificate.
-         enum:
-           - cert
-           - log
-           - ocsp
-           - tls
+        sources:
+          type: array
+          example: cert
+          description: |
+            Hardenize collects CT information from multiple sources. This set indicates
+            all the places where we've collected the information we have on a certificate.
+          enum:
+          - cert
+          - log
+          - ocsp
+          - tls
 
-     required:
-       - log
-       - timestamp
-
+      required:
+      - log
+      - timestamp
+      - sources
 
     ErrorResponse:
       description: |
