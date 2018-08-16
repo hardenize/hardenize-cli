@@ -29,19 +29,19 @@ program
 program
   .command('ls-certs')
   .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
-  .description('List all certificates for an organization')
+  .description('List all certificates')
   .action(handle_ls_certs);
 
 program
   .command('get-cert <sha256>')
   .option('-o, --org [org]',    'Organization. If not supplied, uses default organization')
-  .description('Get certificates for an organization')
+  .description('Get a certificate')
   .action(handle_get_cert);
 
 program
   .command('upload-cert')
   .option('-o, --org [org]',    'Organization. If not supplied, uses default organization')
-  .description('Get certificates for an organization')
+  .description('Upload a certificate')
   .action(handle_upload_cert);
 
 program.on('command:*', function () {

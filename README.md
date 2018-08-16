@@ -35,9 +35,9 @@ $ hardenize
 
     config                       Create / edit configuration
     get-config                   Display configuration
-    ls-certs [options]           List all certificates for an organization
-    get-cert [options] <sha256>  Get certificates for an organization
-    upload-cert [options]        Get certificates for an organization
+    ls-certs [options]           List all certificates
+    get-cert [options] <sha256>  Get a certificate
+    upload-cert [options]        Upload a certificate
 ```
 
 ### Command: config
