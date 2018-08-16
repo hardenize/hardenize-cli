@@ -49,15 +49,15 @@ program.on('command:*', function () {
   process.exit(1);
 });
 
-program.parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
-
+var command_run = false;
 function pre_handle_command(cmd) {
+  command_run = true;
   if (cmd.parent.config) configPath = cmd.parent.config;
 }
+
+program.parse(process.argv);
+
+if (!command_run) program.outputHelp();
 
 function handle_get_config(cmd) {
   pre_handle_command(cmd);
