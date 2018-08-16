@@ -1,0 +1,12 @@
+--- src/ApiClient.js.ORIG	2018-08-14 17:16:06.000000000 +0100
++++ src/ApiClient.js	2018-08-14 17:16:21.000000000 +0100
+@@ -533,7 +533,7 @@
+         if (type === Object) {
+           // generic object, return directly
+           return data;
+-        } else if (typeof type === 'function') {
++        } else if (typeof type === 'function' && type.constructFromObject) {
+           // for model type like: User
+           return type.constructFromObject(data);
+         } else if (Array.isArray(type)) {
+

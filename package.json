@@ -1,0 +1,22 @@
+{
+  "name": "@hardenize/cli",
+  "version": "0.0.2",
+  "author": "Hardenize Limited",
+  "license": "Apache-2.0",
+  "description": "Hardenize CLI Tool",
+  "homepage": "https://www.hardenize.com",
+  "bugs": {
+    "url": "https://github.com/hardenize/hardenize-cli/issues"
+  },
+  "bin": {
+    "hardenize": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "build-openapi": "cd openapi && ./build.sh"
+  },
+  "dependencies": {
+    "commander": "^2.17.1",
+    "hardenize_org_api": "file:openapi/dist"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "hardenize_org_api",
+  "version": "0.1.1",
+  "description": "Hardenize_is_a_platform_for_continuous_monitoring_of_networkand_security_configuration__Hardenize_supports_individual_accountsintended_for_use_by_a_single_person_and_organization_accounts_whichare_shared_among_potentially_many_individuals__Whereas_individualaccounts_are_limited_organization_accounts_can_have_access_to_allHardenize_features__The_Organization_API_documented_here_providesability_to_manage_and_retrieve_information_from_organization_accounts_At_this_time_because_were_still_developing_these_APIs_they_are_notenabled_by_default_for_all_organizations__Please_contact_us_so_thatwe_can_enable_the_APIs_for_you__After_that_youll_be_able_to_generateyour_API_credentials_in_the_Settings_section_This_specification_is_a_work_in_progress_and_may_change_without_notice_",
+  "license": "Unlicense",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha --recursive"
+  },
+  "browser": {
+    "fs": false
+  },
+  "dependencies": {
+    "superagent": "3.7.0"
+  },
+  "devDependencies": {
+    "mocha": "~2.3.4",
+    "sinon": "1.17.3",
+    "expect.js": "~0.3.1"
+  }
+}
