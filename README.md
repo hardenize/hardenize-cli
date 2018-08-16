@@ -2,12 +2,18 @@
 
 This tool provides easy access to the [Hardenize](https://www.hardenize.com) API.
 
-## Setup
+## Install
 
 ```shell
-git clone https://github.com/hardenize/hardenize-cli
-cd hardenize-cli
-npm i -g
+$ npm i -g @hardenize/cli
+```
+
+Or:
+
+```shell
+$ git clone https://github.com/hardenize/hardenize-cli
+$ cd hardenize-cli
+$ npm i -g
 ```
 
 ## Usage
