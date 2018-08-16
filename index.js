@@ -33,6 +33,7 @@ program
   .option('--expired [yes/no]',        'Filter by expired', toBool('expired'))
   .option('--expireInDays <days>',     'Include only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp')
   .option('--host <host>',             'Include only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)')
+  .option('--limit <max>',             'Maximum number of certificates to return', parseInt)
   .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash')
   .description('List all certificates')
   .action(handle_ls_certs);

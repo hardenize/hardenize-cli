@@ -82,6 +82,7 @@ var opts = {
   'expired': true, // Boolean | If set, returns only expired or non-expired certificates
   'expireInDays': 14, // Number | If set, returns only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp
   'host': example.com, // String | If set, returns only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)
+  'limit': 100, // Number | If set, returns only up to the specified number of certificates.
   'spkiSha256': 56c17eb4e3d510f7020e142cd36f617b38f93c26c72cc13dfebfbeed3e554382 // String | If set, returns only certificates whose public key (SPKI) matches the provided hash
 };
 var callback = function(error, data, response) {
@@ -102,6 +103,7 @@ Name | Type | Description  | Notes
  **expired** | **Boolean**| If set, returns only expired or non-expired certificates | [optional] 
  **expireInDays** | **Number**| If set, returns only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp | [optional] 
  **host** | **String**| If set, returns only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards) | [optional] 
+ **limit** | **Number**| If set, returns only up to the specified number of certificates. | [optional] 
  **spkiSha256** | **String**| If set, returns only certificates whose public key (SPKI) matches the provided hash | [optional] 
 
 ### Return type

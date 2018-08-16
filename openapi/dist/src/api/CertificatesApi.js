@@ -109,6 +109,7 @@
      * @param {Boolean} opts.expired If set, returns only expired or non-expired certificates
      * @param {Number} opts.expireInDays If set, returns only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp
      * @param {String} opts.host If set, returns only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)
+     * @param {Number} opts.limit If set, returns only up to the specified number of certificates.
      * @param {String} opts.spkiSha256 If set, returns only certificates whose public key (SPKI) matches the provided hash
      * @param {module:api/CertificatesApi~listCertificatesCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ListCertsResponse}
@@ -125,6 +126,7 @@
         'expired': opts['expired'],
         'expireInDays': opts['expireInDays'],
         'host': opts['host'],
+        'limit': opts['limit'],
         'spkiSha256': opts['spkiSha256'],
       };
       var collectionQueryParams = {

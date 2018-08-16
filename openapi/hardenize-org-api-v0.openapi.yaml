@@ -88,6 +88,15 @@ paths:
           because they contain the exact hostname or because they are wildcards and contain the
           parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)
 
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: 100
+        description:
+          If set, returns only up to the specified number of certificates.
+
       - name: spkiSha256
         in: query
         required: false
