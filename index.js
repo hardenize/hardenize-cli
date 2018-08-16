@@ -28,7 +28,12 @@ program
 
 program
   .command('ls-certs')
-  .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
+  .option('-o, --org [org]',           'Organization. If not supplied, uses default organization')
+  .option('--active',                  'Include only active certificates')
+  .option('--expired',                 'Include only expired certificates')
+  .option('--expireInDays <days>',     'Include only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp')
+  .option('--host <host>',             'Include only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)')
+  .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash')
   .description('List all certificates')
   .action(handle_ls_certs);
 
@@ -107,7 +112,13 @@ function handle_ls_certs(cmd) {
   setupApi(cmd.org);
   var api = new HardenizeOrgApi.CertificatesApi();
 
-  api.listCertificates(function(error, data, response) {
+  var opt = {};
+  Object.keys(cmd._events).forEach(function(event){
+    var m = event.match(/^option:(.+)/);
+    if (m && typeof cmd[m[1]] !== 'undefined') opt[m[1]] = cmd[m[1]];
+  });
+
+  api.listCertificates(opt, function(error, data, response) {
     if (error) exit_error(error.message);
     console.log(JSON.stringify(data.certs, null, 2));
   });

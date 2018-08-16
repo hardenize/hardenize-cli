@@ -18,10 +18,10 @@ $ npm i -g
 
 ## Usage
 
-Run without arguments in order to see the list of options:
+Run without arguments or with --help/-h to see the list of options:
 
 ```shell
-$ hardenize 
+$ hardenize
 
   Usage: hardenize [options] [command]
 
@@ -39,6 +39,8 @@ $ hardenize
     get-cert [options] <sha256>  Get a certificate
     upload-cert [options]        Upload a certificate
 ```
+
+You can also get additional help on a per-command basis. E.g: run `hardenize ls-certs --help`
 
 ### Command: config
 
@@ -97,6 +99,8 @@ $ hardenize ls-certs --org demo
     "lastSeen": "2018-08-15T12:09:47.000Z",
     ...etc
 ```
+
+There are a number of methods for filtering which certificates are retrieved. Run `hardenize ls-certs --help` to see them.
 
 ### Command: get-cert <sha256>
 
