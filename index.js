@@ -30,7 +30,9 @@ program
   .command('ls-certs')
   .option('-o, --org [org]',           'Organization. If not supplied, uses default organization')
   .option('--active',                  'Include only active certificates')
+  .option('--no-active',               'Exclude active certificates')
   .option('--expired',                 'Include only expired certificates')
+  .option('--no-expired',              'Exclude expired certificates')
   .option('--expireInDays <days>',     'Include only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp')
   .option('--host <host>',             'Include only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)')
   .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash')
@@ -57,7 +59,7 @@ program.on('command:*', function () {
 var command_run = false;
 function pre_handle_command(cmd) {
   command_run = true;
-  if (cmd.parent.config) configPath = cmd.parent.config;
+  if (cmd.parent && cmd.parent.config) configPath = cmd.parent.config;
 }
 
 program.parse(process.argv);
@@ -113,7 +115,7 @@ function handle_ls_certs(cmd) {
   var api = new HardenizeOrgApi.CertificatesApi();
 
   var opt = {};
-  Object.keys(cmd._events).forEach(function(event){
+  Object.keys(cmd._events||{}).forEach(function(event){
     var m = event.match(/^option:(.+)/);
     if (m && typeof cmd[m[1]] !== 'undefined') opt[m[1]] = cmd[m[1]];
   });
