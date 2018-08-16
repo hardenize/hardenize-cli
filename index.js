@@ -5,7 +5,7 @@ var os              = require('os');
 var path            = require('path');
 var program         = require('commander');
 var readline        = require('readline');
-var HardenizeOrgApi = require('hardenize_org_api');
+var HardenizeOrgApi = require('./openapi/dist');
 
 var cli_version = require('./package.json').version;
 var api_version = '0';

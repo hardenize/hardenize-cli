@@ -1,6 +1,6 @@
 {
   "name": "@hardenize/cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Hardenize Limited",
   "license": "Apache-2.0",
   "description": "Hardenize CLI Tool",
@@ -17,6 +17,6 @@
   },
   "dependencies": {
     "commander": "^2.17.1",
-    "hardenize_org_api": "file:openapi/dist"
+    "superagent": "3.7.0"
   }
 }
