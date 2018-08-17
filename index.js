@@ -4,7 +4,6 @@ var fs              = require('fs');
 var os              = require('os');
 var path            = require('path');
 var program         = require('commander');
-var readline        = require('readline');
 var HardenizeOrgApi = require('./openapi/dist');
 
 var cli_version = require('./package.json').version;
@@ -19,12 +18,12 @@ program.option('-c, --config [config-path]', 'Path to config. Default is ~/.hard
 program
   .command('config')
   .description('Create / edit configuration')
-  .action(handle_config);
+  .action(handle_command('config'));
 
 program
   .command('get-config')
   .description('Display configuration')
-  .action(handle_get_config);
+  .action(handle_command('get_config'));
 
 program
   .command('ls-certs')
@@ -36,19 +35,19 @@ program
   .option('--limit <max>',             'Maximum number of certificates to return', opt_int('limit'))
   .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash', opt_sha256('spkiSha256'))
   .description('List all certificates')
-  .action(handle_ls_certs);
+  .action(handle_command('ls_certs'));
 
 program
   .command('get-cert <sha256>')
   .option('-o, --org [org]',    'Organization. If not supplied, uses default organization')
   .description('Get a certificate')
-  .action(handle_get_cert);
+  .action(handle_command('get_cert'));
 
 program
   .command('upload-cert')
   .option('-o, --org [org]',    'Organization. If not supplied, uses default organization')
   .description('Upload a certificate')
-  .action(handle_upload_cert);
+  .action(handle_command('upload_cert'));
 
 program.on('command:*', function () {
   console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
@@ -56,127 +55,54 @@ program.on('command:*', function () {
 });
 
 var command_run = false;
-function pre_handle_command(cmd) {
-  command_run = true;
-  if (cmd.parent && cmd.parent.config) configPath = cmd.parent.config;
-}
-
 program.parse(process.argv);
-
 if (!command_run) program.outputHelp();
 
-function handle_get_config(cmd) {
-  pre_handle_command(cmd);
+function handle_command(name) {
+  return function() {
 
-  console.log(JSON.stringify(read_config(), null, 2));
-}
+    command_run = true;
+    var func    = require('./command/' + name);
 
-function handle_config(cmd) {
-  pre_handle_command(cmd);
+    var cmd = arguments[arguments.length-1];
+    if (cmd.parent && cmd.parent.config) configPath = cmd.parent.config;
 
-  var rl = readline.createInterface({
-    input:  process.stdin,
-    output: process.stdout
-  });
+    var ctx = {
+      exit_api_error: exit_api_error,
+      read_config:    read_config,
+      write_config:   write_config,
+      api:            api(cmd),
+    };
 
-  var config = read_config();
-
-  rl.question('* API Username' + (config.username ? ' [' + config.username + ']' : '') + ': ', function(username) {
-    if (username.length) {
-      config.username = username;
-    } else if (!config.username) {
-      exit_error('Invalid username');
+    try {
+      func.apply(ctx, arguments);
+    } catch(err) {
+      console.warn(err.message);
+      process.exit(1);
     }
-    rl.question('* API Password' + (config.password ? ' [' + config.password + ']' : '') + ': ', function(password) {
-      if (password.length) {
-        config.password = password;
-      } else if (!config.password) {
-        exit_error('Invalid password');
-      }
-      rl.question('  Default organization: ', function(default_org) {
-        if (default_org.length) {
-          config.default_org = default_org;
-        } else {
-          delete config.default_org;
-        }
-        rl.close();
-        write_config(config);
-        console.log('Configuration saved');
-      });
-    });
-  });
-}
-
-function handle_ls_certs(cmd) {
-  pre_handle_command(cmd);
-
-  setupApi(cmd.org);
-  var api = new HardenizeOrgApi.CertificatesApi();
-
-  var opt = {};
-  Object.keys(cmd._events||{}).forEach(function(event){
-    var m = event.match(/^option:(.+)/);
-    if (m && typeof cmd[m[1]] !== 'undefined') opt[m[1]] = cmd[m[1]];
-  });
-
-  api.listCertificates(opt, function(error, data, response) {
-    if (error) exit_api_error(error, response);
-    console.log(JSON.stringify(data, null, 2));
-  });
-}
-
-function handle_get_cert(sha256, cmd) {
-  pre_handle_command(cmd);
-
-  setupApi(cmd.org);
-  var api = new HardenizeOrgApi.CertificatesApi();
-
-  api.retrieveACertificate(sha256, function(error, data, response) {
-    if (error) exit_api_error(error, response);
-    console.log(JSON.stringify(data, null, 2));
-  });
-}
-
-function handle_upload_cert(cmd) {
-  pre_handle_command(cmd);
-
-  setupApi(cmd.org);
-  var api = new HardenizeOrgApi.CertificatesApi();
-
-  process.stdin.resume();
-  process.stdin.setEncoding('utf8');
-  var buffer = '';
-  process.stdin.on('data', function(chunk) {
-    buffer += chunk;
-  });
-  process.stdin.on('end', function() {
-    api.createACertificate(buffer, function(error, _, response) {
-      if (error) exit_api_error(error, response);
-      switch (response.status) {
-        case 201: return console.log('Certificate successfully created');
-        case 204: return console.log('Certificate already exists');
-        default:  exit_error('Unexpected response code', response.status);
-      }
-    });
-  });
-}
-
-function setupApi(orgLabel) {
-  if (!orgLabel) orgLabel = default_org();
-  if (!orgLabel) exit_error('Either set a default org in the config, or specify --org');
-  
-  var config = read_config();
-
-  if (!config.username || !config.password) {
-    console.warn('You must configure the API username and password first');
   }
+}
 
-  apiClient.basePath = config.base_url + '/org/' + orgLabel + '/api/v' + api_version;
-  var auth      = apiClient.authentications['Basic HTTP Authentication'];
-  auth.username = config.username;
-  auth.password = config.password;
+function api(cmd) {
+  return function(name) {
+    var config = read_config();
 
-  if (config.disable_tls_validation) process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+    var orgLabel = cmd.org || config.default_org;
+    if (!orgLabel) throw new Error('Either set a default org in the config, or specify --org');
+
+    if (!config.username || !config.password) {
+      console.warn('You must configure the API username and password first');
+    }
+
+    apiClient.basePath = config.base_url + '/org/' + orgLabel + '/api/v' + api_version;
+    var auth      = apiClient.authentications['Basic HTTP Authentication'];
+    auth.username = config.username;
+    auth.password = config.password;
+
+    if (config.disable_tls_validation) process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+
+    return new HardenizeOrgApi[name + 'Api']();
+  };
 }
 
 function exit_error() {
@@ -186,14 +112,10 @@ function exit_error() {
 
 function exit_api_error(error, response) {
   console.warn(error.status + ' ' + error.message);
-  if (response.error && response.error.text) {
+  if (response && response.error && response.error.text) {
       console.log(response.error.text);
   }
   process.exit(1);
-}
-
-function default_org() {
-  return read_config().default_org;
 }
 
 function read_config() {
