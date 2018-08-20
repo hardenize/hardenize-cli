@@ -7,11 +7,16 @@ var program      = require('commander');
 var HardenizeApi = require('@hardenize/api');
 
 var cli_version = require('./package.json').version;
-var api_version = '0';
 var configPath  = path.join(os.homedir(), '.hardenize');
+
+var devMode = false;
+for (var i = 2; i < process.argv.length; ++i) {
+  if (process.argv[i] === '--dev-mode') devMode = true;
+}
 
 program.version(cli_version, '-v, --version')
 program.option('-c, --config [config-path]', 'Path to config. Default is ~/.hardenize');
+if (devMode) program.option('--dev-mode', 'Enable dev mode');
 
 program
   .command('config')
@@ -25,13 +30,13 @@ program
 
 program
   .command('get-certs')
-  .option('-o, --org [org]',           'Organization. If not supplied, uses default organization')
-  .option('--active [yes/no]',         'Filter by active',  opt_bool('active'))
-  .option('--expired [yes/no]',        'Filter by expired', opt_bool('expired'))
-  .option('--expireInDays <days>',     'Include only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp', opt_int('expireInDays'))
-  .option('--host <host>',             'Include only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)')
-  .option('--limit <max>',             'Maximum number of certificates to return', opt_int('limit'))
-  .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash', opt_sha256('spkiSha256'))
+  .option('-o, --org [org]',             'Organization. If not supplied, uses default organization')
+  .option('--active  [yes/no]',          'Filter by active',  opt_bool('active'))
+  .option('--expired [yes/no]',          'Filter by expired', opt_bool('expired'))
+  .option('--expire-in-days <days>',     'Include only certificates that have already expired or expire in the specified number of days, according to the effectiveNotAfter timestamp', opt_int('expire-in-days'))
+  .option('--host  <host>',              'Include only certificates that are valid for the specified host, either because they contain the exact hostname or because they are wildcards and contain the parent hostname (e.g., a search for blog.example.com will match *.example.com wildcards)')
+  .option('--limit <max>',               'Maximum number of certificates to return', opt_int('limit'))
+  .option('--spki-sha256 <spki-sha256>', 'Include only certificates whose public key (SPKI) matches the provided hash', opt_sha256('spki-sha256'))
   .description('List all certificates')
   .action(handle_command('get_certs'));
 
@@ -46,6 +51,13 @@ program
   .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
   .description('Add a certificate')
   .action(handle_command('add_cert'));
+
+if (devMode) {
+  program.command('del-cert <sha256>')
+    .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
+    .description('Delete a certificate (DEV-MODE)')
+    .action(handle_command('del_cert'));
+}
 
 program.on('command:*', function () {
   console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
@@ -101,6 +113,7 @@ function api(cmd) {
       org:  orgLabel,
     };
     if (config.base_url) apiConfig.url = config.base_url;
+    if (devMode) apiConfig.devMode = true;
 
     return new HardenizeApi(apiConfig);
   };

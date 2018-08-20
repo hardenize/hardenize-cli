@@ -137,22 +137,7 @@ $ hardenize add-cert --org demo < ./file-containing-cert.pem
 Certificate already exists
 ```
 
-## Development / Contributing
+## Development
 
-If you wish to point the tool at a different URL, for testing purposes. Just add a "base_url" option to the root of your config, which looks like for example:
-
-```json
-{
-    "base_url": "https://example.com"
-}
-```
-
-Then when using that configuration, the API end-points will look like `https://example.com/org/orgLabel/v0`
-
-If you wish to disable TLS validation because you're testing against a dev machine with a self signed certificate, you can manually add the following to your configuration file:
-
-```json
-{
-    "disable_tls_validation": true
-}
-```
+If you are a core developer of this library (you almost certainly aren't, unless you work for
+Hardenize Limited), you should check out [./DEVELOPMENT.md](DEVELOPMENT.md)
