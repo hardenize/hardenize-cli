@@ -1,16 +1,14 @@
 #!/usr/bin/env node
 
-var fs              = require('fs');
-var os              = require('os');
-var path            = require('path');
-var program         = require('commander');
-var HardenizeOrgApi = require('./openapi/dist');
+var fs           = require('fs');
+var os           = require('os');
+var path         = require('path');
+var program      = require('commander');
+var HardenizeApi = require('@hardenize/api');
 
 var cli_version = require('./package.json').version;
 var api_version = '0';
 var configPath  = path.join(os.homedir(), '.hardenize');
-
-var apiClient = HardenizeOrgApi.ApiClient.instance;
 
 program.version(cli_version, '-v, --version')
 program.option('-c, --config [config-path]', 'Path to config. Default is ~/.hardenize');
@@ -26,7 +24,7 @@ program
   .action(handle_command('get_config'));
 
 program
-  .command('ls-certs')
+  .command('get-certs')
   .option('-o, --org [org]',           'Organization. If not supplied, uses default organization')
   .option('--active [yes/no]',         'Filter by active',  opt_bool('active'))
   .option('--expired [yes/no]',        'Filter by expired', opt_bool('expired'))
@@ -35,7 +33,7 @@ program
   .option('--limit <max>',             'Maximum number of certificates to return', opt_int('limit'))
   .option('--spkiSha256 <spkiSha256>', 'Include only certificates whose public key (SPKI) matches the provided hash', opt_sha256('spkiSha256'))
   .description('List all certificates')
-  .action(handle_command('ls_certs'));
+  .action(handle_command('get_certs'));
 
 program
   .command('get-cert <sha256>')
@@ -68,23 +66,24 @@ function handle_command(name) {
     if (cmd.parent && cmd.parent.config) configPath = cmd.parent.config;
 
     var ctx = {
-      exit_api_error: exit_api_error,
       read_config:    read_config,
       write_config:   write_config,
       api:            api(cmd),
     };
 
     try {
-      func.apply(ctx, arguments);
+      var res = func.apply(ctx, arguments);
+      if (res instanceof Promise) {
+        res.catch(exit_error);
+      }
     } catch(err) {
-      console.warn(err.message);
-      process.exit(1);
+      exit_error(err.message);
     }
   }
 }
 
 function api(cmd) {
-  return function(name) {
+  return function() {
     var config = read_config();
 
     var orgLabel = cmd.org || config.default_org;
@@ -94,27 +93,24 @@ function api(cmd) {
       console.warn('You must configure the API username and password first');
     }
 
-    apiClient.basePath = config.base_url + '/org/' + orgLabel + '/api/v' + api_version;
-    var auth      = apiClient.authentications['Basic HTTP Authentication'];
-    auth.username = config.username;
-    auth.password = config.password;
-
     if (config.disable_tls_validation) process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
-    return new HardenizeOrgApi[name + 'Api']();
+    var apiConfig = {
+      user: config.username,
+      pass: config.password,
+      org:  orgLabel,
+    };
+    if (config.base_url) apiConfig.url = config.base_url;
+
+    return new HardenizeApi(apiConfig);
   };
 }
 
-function exit_error() {
-  console.warn.apply(null, arguments);
-  process.exit(1);
-}
-
-function exit_api_error(error, response) {
-  console.warn(error.status + ' ' + error.message);
-  if (response && response.error && response.error.text) {
-      console.log(response.error.text);
-  }
+function exit_error(err) {
+  var res     = err.res;
+  var message = err instanceof Error ? err.message : err;
+  if (res)                                console.warn(res.status + ' ' + res.statusText);
+  if (!res || res.statusText !== message) console.warn(message);
   process.exit(1);
 }
 

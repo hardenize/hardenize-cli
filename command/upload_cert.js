@@ -1,6 +1,4 @@
 module.exports = function upload_cert(cmd) {
-  var self = this;
-  var api = this.api('Certificates');
 
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
@@ -8,14 +6,25 @@ module.exports = function upload_cert(cmd) {
   process.stdin.on('data', function(chunk) {
     buffer += chunk;
   });
-  process.stdin.on('end', function() {
-    api.createACertificate(buffer, function(error, _, response) {
-      if (error) self.exit_api_error(error, response);
-      switch (response.status) {
-        case 201: return console.log('Certificate successfully created');
-        case 204: return console.log('Certificate already exists');
-        default: throw new Error('Unexpected response code', response.status);
-      }
+
+  var api = this.api();
+  return new Promise(function(resolve, reject){
+    process.stdin.on('end', function() {
+      return api.uploadCert(buffer)
+        .catch(reject)
+        .then(function(response){
+          switch (response.res.status) {
+            case 201: console.log('Certificate successfully created'); break;
+            case 204: console.log('Certificate already exists');       break;
+            default: {
+              var err = new Error('Unexpected response code');
+              err.res = response.res;
+              return reject(err);
+            }
+          }
+          resolve();
+        });
     });
   });
+
 };

@@ -1,11 +1,8 @@
 module.exports = function get_cert(sha256) {
-  var self = this;
 
-  var api = this.api('Certificates');
-
-  api.retrieveACertificate(sha256, function(error, data, response) {
-    if (error) self.exit_api_error(error, response);
-    console.log(JSON.stringify(data, null, 2));
-  });
+  return this.api().getCert(sha256)
+    .then(function(response){
+      console.log(JSON.stringify(response.data, null, 2));
+    });
 
 };

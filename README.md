@@ -35,12 +35,12 @@ $ hardenize
 
     config                       Create / edit configuration
     get-config                   Display configuration
-    ls-certs [options]           List all certificates
+    get-certs [options]          List all certificates
     get-cert [options] <sha256>  Get a certificate
     upload-cert [options]        Upload a certificate
 ```
 
-You can also get additional help on a per-command basis. E.g: run `hardenize ls-certs --help`
+You can also get additional help on a per-command basis. E.g: run `hardenize get-certs --help`
 
 ### Command: config
 
@@ -71,16 +71,16 @@ $ hardenize get-config
   "password": "my-api-password",
   "default_org": "demo",
   "base_url": "https://www.hardenize.com",
-  "cli_version": "0.0.2"
+  "cli_version": "0.1.0"
 }
 ```
 
-### Command: ls-certs
+### Command: get-certs
 
 This allows you to view a list of all of the certificates for your organization:
 
 ```shell
-$ hardenize ls-certs --org demo
+$ hardenize get-certs --org demo
 [
   {
     "sha256": "5b620957f0f13c8d57d5a0131c6aa5d5686cf935a762ec3ab33efc8f02903fca",
@@ -100,7 +100,7 @@ $ hardenize ls-certs --org demo
     ...etc
 ```
 
-There are a number of methods for filtering which certificates are retrieved. Run `hardenize ls-certs --help` to see them.
+There are a number of methods for filtering which certificates are retrieved. Run `hardenize get-certs --help` to see them.
 
 ### Command: get-cert <sha256>
 
@@ -138,8 +138,6 @@ Certificate already exists
 ```
 
 ## Development / Contributing
-
-Inside the `openapi` directory we have a file named `hardenize-org-api-v0.openapi.yml` which describes our API in a standard format. Inside the same directory is a shell script named `build.sh` which when run, will download [openapi-generator-cli](https://github.com/OpenAPITools/openapi-generator), and use it to build a javascript client library in the `dist` directory. It then merges in some additional source code and applies some patches. To trigger this process, run `npm run build-openapi` from the root of the repository. You will not need to do this unless you intend to upgrade the API client library.
 
 If you wish to point the tool at a different URL, for testing purposes. Just add a "base_url" option to the root of your config, which looks like for example:
 
