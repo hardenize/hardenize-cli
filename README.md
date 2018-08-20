@@ -37,7 +37,7 @@ $ hardenize
     get-config                   Display configuration
     get-certs [options]          List all certificates
     get-cert [options] <sha256>  Get a certificate
-    upload-cert [options]        Upload a certificate
+    add-cert [options]           Add a certificate
 ```
 
 You can also get additional help on a per-command basis. E.g: run `hardenize get-certs --help`
@@ -126,14 +126,14 @@ $ hardenize get-cert 5b620957f0f13c8d57d5a0131c6aa5d5686cf935a762ec3ab33efc8f029
   ...etc
 ```
 
-### Command: upload-cert
+### Command: add-cert
 
-This allows you to upload a certificate.
+This allows you to add a certificate.
 
 ```shell
-$ hardenize upload-cert --org demo < ./file-containing-cert.pem 
+$ hardenize add-cert --org demo < ./file-containing-cert.pem 
 Certificate successfully created
-$ hardenize upload-cert --org demo < ./file-containing-cert.pem 
+$ hardenize add-cert --org demo < ./file-containing-cert.pem 
 Certificate already exists
 ```
 

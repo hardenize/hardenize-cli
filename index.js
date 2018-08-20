@@ -37,15 +37,15 @@ program
 
 program
   .command('get-cert <sha256>')
-  .option('-o, --org [org]',    'Organization. If not supplied, uses default organization')
+  .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
   .description('Get a certificate')
   .action(handle_command('get_cert'));
 
 program
-  .command('upload-cert')
-  .option('-o, --org [org]',    'Organization. If not supplied, uses default organization')
-  .description('Upload a certificate')
-  .action(handle_command('upload_cert'));
+  .command('add-cert')
+  .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
+  .description('Add a certificate')
+  .action(handle_command('add_cert'));
 
 program.on('command:*', function () {
   console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));

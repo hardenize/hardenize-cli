@@ -1,4 +1,4 @@
-module.exports = function upload_cert(cmd) {
+module.exports = function add_cert(cmd) {
 
   process.stdin.resume();
   process.stdin.setEncoding('utf8');
@@ -10,7 +10,7 @@ module.exports = function upload_cert(cmd) {
   var api = this.api();
   return new Promise(function(resolve, reject){
     process.stdin.on('end', function() {
-      return api.uploadCert(buffer)
+      return api.addCert(buffer)
         .catch(reject)
         .then(function(response){
           switch (response.res.status) {
