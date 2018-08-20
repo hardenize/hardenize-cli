@@ -33,11 +33,12 @@ $ hardenize
 
   Commands:
 
-    config                       Create / edit configuration
-    get-config                   Display configuration
-    get-certs [options]          List all certificates
-    get-cert [options] <sha256>  Get a certificate
-    add-cert [options]           Add a certificate
+    config                         Create / edit configuration
+    get-config                     Display configuration
+    get-certs [options]            List all certificates
+    get-cert [options] <sha256>    Get a certificate
+    add-cert [options]             Add a certificate (reads as PEM from stdin)
+    add-dns-zone [options] <root>  Add DNS zone file (reads bind compatible zone from stdin)
 ```
 
 You can also get additional help on a per-command basis. E.g: run `hardenize get-certs --help`
@@ -134,6 +135,17 @@ This allows you to add a certificate.
 $ hardenize add-cert --org demo < ./file-containing-cert.pem 
 Certificate successfully created
 $ hardenize add-cert --org demo < ./file-containing-cert.pem 
+Certificate already exists
+```
+
+### Command: add-dns-zone
+
+This allows you to upload a bind compatible DNS zone
+
+```shell
+$ hardenize add-dns-zone --org demo < ./file-containing-zone
+Certificate successfully created
+$ hardenize add-dns-zone --org demo < ./file-containing-zone
 Certificate already exists
 ```
 

@@ -49,7 +49,7 @@ program
 program
     .command('add-cert')
     .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
-    .description('Add a certificate')
+    .description('Add a certificate (reads as PEM from stdin)')
     .action(handle_command('add_cert'));
 
 if (devMode) {
@@ -61,7 +61,7 @@ if (devMode) {
 
 program
     .command('add-dns-zone <root>')
-    .description('Add DNS zone file')
+    .description('Add DNS zone file (reads bind compatible zone from stdin)')
     .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
     .option('--status [status]', 'Status for new hosts discovered in zone file: monitored, idle or archive')
     .action(handle_command('add_dns_zone'));
