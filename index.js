@@ -59,6 +59,13 @@ if (devMode) {
     .action(handle_command('del_cert'));
 }
 
+program
+  .command('add-dns-zone <root>')
+  .description('Add DNS zone file')
+  .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
+  .option('--status [status]', 'Status for new hosts discovered in zone file: monitored, idle or archive')
+  .action(handle_command('add_dns_zone'));
+
 program.on('command:*', function () {
   console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
   process.exit(1);
@@ -122,8 +129,10 @@ function api(cmd) {
 function exit_error(err) {
   var res     = err.res;
   var message = err instanceof Error ? err.message : err;
-  if (res)                                console.warn(res.status + ' ' + res.statusText);
-  if (!res || res.statusText !== message) console.warn(message);
+  if (res)                                console.error('Error: ' + res.status + ' ' + res.statusText);
+  if ((!res || res.statusText !== message) && message.length) console.error('Error: ' + message);
+
+  if (err.data) console.error(JSON.stringify(err.data, null, 2));
   process.exit(1);
 }
 
