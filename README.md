@@ -34,7 +34,7 @@ $ hardenize
   Commands:
 
     config                         Create / edit configuration
-    get-config                     Display configuration
+    get-config [key]               Display configuration. If key is supplied, will only output that item
     get-certs [options]            List all certificates
     get-cert [options] <sha256>    Get a certificate
     add-cert [options]             Add a certificate (reads as PEM from stdin)
@@ -74,6 +74,8 @@ $ hardenize get-config
   "base_url": "https://www.hardenize.com",
   "cli_version": "0.1.0"
 }
+$ hardenize get-config username
+my-api-username
 ```
 
 You can override any of the configuration options by setting an environment variable of

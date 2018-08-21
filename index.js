@@ -24,8 +24,8 @@ program
     .action(handle_command('config'));
 
 program
-    .command('get-config')
-    .description('Display configuration')
+    .command('get-config [key]')
+    .description('Display configuration. If key is supplied, will only output that item')
     .action(handle_command('get_config'));
 
 program
