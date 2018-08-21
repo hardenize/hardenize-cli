@@ -2,6 +2,8 @@ var config = require('../../config');
 
 var settable = [
     'base_url',
+    'cloudflare_email',
+    'cloudflare_key',
     'default_org',
     'disable_tls_validation',
     'password',
