@@ -35,6 +35,8 @@ $ hardenize
 
     config                         Create / edit configuration
     get-config [key]               Display configuration. If key is supplied, will only output that item
+    set-config <key> <value>       Set an individual configuration item
+    del-config [key]               Delete configuration item
     get-certs [options]            List all certificates
     get-cert [options] <sha256>    Get a certificate
     add-cert [options]             Add a certificate (reads as PEM from stdin)
@@ -90,6 +92,24 @@ $ HZ_DEFAULT_ORG="test" hardenize get-config
   "base_url": "https://www.hardenize.com",
   "cli_version": "0.1.0"
 }
+```
+
+### Command: set-config
+
+This allows you to set an individual configuration item value:
+
+```shell
+$ hardenize-local set-config default_org demo
+Configuration saved
+```
+
+### Command: del-config
+
+This allows you to delete an individual configuration item:
+
+```shell
+$ hardenize-local del-config default_org
+Configuration saved
 ```
 
 ### Command: get-certs

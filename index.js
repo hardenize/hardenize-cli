@@ -29,6 +29,16 @@ program
     .action(handle_command('config/get'));
 
 program
+    .command('set-config <key> <value>')
+    .description('Set an individual configuration item')
+    .action(handle_command('config/set'));
+
+program
+    .command('del-config [key]')
+    .description('Delete configuration item')
+    .action(handle_command('config/delete'));
+
+program
     .command('get-certs')
     .option('-o, --org [org]',             'Organization. If not supplied, uses default organization')
     .option('--active  [yes/no]',          'Filter by active',  opt_bool('active'))
