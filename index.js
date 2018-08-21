@@ -144,7 +144,16 @@ function read_config() {
     if (!config.cli_version) config.cli_version = cli_version;
     if (!config.base_url)    config.base_url    = 'https://www.hardenize.com';
 
-    return migrate_config(config);
+    migrate_config(config);
+
+    Object.keys(process.env).forEach(function(envName){
+        var m = envName.match(/^HZ_(.+)$/);
+        if (!m) return;
+        var name = m[1].toLowerCase();
+        if (name === 'cli_version') return;
+        config[name] = process.env[envName];
+    });
+    return config;
 }
 
 function write_config(config) {

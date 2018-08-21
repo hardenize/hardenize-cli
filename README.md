@@ -76,6 +76,20 @@ $ hardenize get-config
 }
 ```
 
+You can override any of the configuration options by setting an environment variable of
+the same name, prefixed with `HZ_`. For example, to override `default_org`:
+
+```shell
+$ HZ_DEFAULT_ORG="test" hardenize get-config
+{
+  "username": "my-api-username",
+  "password": "my-api-password",
+  "default_org": "test",
+  "base_url": "https://www.hardenize.com",
+  "cli_version": "0.1.0"
+}
+```
+
 ### Command: get-certs
 
 This allows you to view a list of all of the certificates for your organization:
