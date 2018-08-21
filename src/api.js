@@ -4,14 +4,14 @@ var config       = require('./config');
 module.exports.init = function api(argv) {
     var conf = config.read(argv);
 
-    var orgLabel = argv.org || conf.default_org;
-    if (!orgLabel) {
-        console.error('Either set a default org in the config, or specify --org');
+    if (!conf.username || !conf.password) {
+        console.error('You must configure API credentials first. Run: hardenize config init');
         process.exit(1);
     }
 
-    if (!conf.username || !conf.password) {
-        console.error('You must configure the API username and password first');
+    var orgLabel = argv.org || conf.default_org;
+    if (!orgLabel) {
+        console.error('Either set a default org in the config, or specify --org');
         process.exit(1);
     }
 
