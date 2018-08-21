@@ -1,6 +1,12 @@
-module.exports = function get_cert(sha256) {
+var api = require('../../api');
 
-    return this.api().getCert(sha256)
+exports.command = 'get <sha256>';
+
+exports.desc = 'Get a certificate';
+
+exports.handler = function get_certs_handler(argv) {
+
+    api.init(argv).getCert(argv.sha256)
         .then(function(response){
             console.log(JSON.stringify(response.data, null, 2));
         })
@@ -9,6 +15,6 @@ module.exports = function get_cert(sha256) {
                 return console.warn('Certificate not found');
             }
             return Promise.reject(err);
-        });
-
+        })
+        .catch(api.catchError);
 };

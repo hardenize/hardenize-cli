@@ -1,6 +1,18 @@
-module.exports = function del_cert(sha256) {
+var api = require('../../api');
 
-    return this.api().delCert(sha256)
+module.exports.command = 'rm <sha256>';
+
+module.exports.desc = process.env.HZ_DEV_MODE ? 'Delete a certificate' : false;
+
+module.exports.builder = {};
+
+module.exports.handler = function rm_certs_handler(argv) {
+    if (!process.env.HZ_DEV_MODE) {
+        console.error('Not running in dev mode');
+        process.exit(1);
+    }
+
+    api.init(argv).delCert(argv.sha256)
         .then(function(response){
             if (response.res.status === 204) {
                 return console.log('Successfully deleted certificate');
@@ -14,6 +26,7 @@ module.exports = function del_cert(sha256) {
                 return console.log('Certificate not found');
             }
             return Promise.reject(err);
-        });
+        })
+        .catch(api.catchError);
 
 };
