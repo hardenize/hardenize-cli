@@ -22,8 +22,6 @@ DO NOT LET THIS CODE FIND IT'S WAY INTO PRODUCTION!!!
 
 ## Dev-mode
 
-If you add `--dev-mode` to your command line arguments, there will be additional commands
+If you set the environment variable `HZ_DEV_MODE`, there will be additional commands
 and options available to you. These will usually only work against a hardenize app server
-in development mode so are useless to people other than Hardenize Limited developers. To
-see the additional commands, just run `hardenize --dev-mode` and look for the commands
-marked `(DEV-MODE)`
+in development mode so are useless to people other than Hardenize Limited developers.
