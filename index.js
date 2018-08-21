@@ -26,7 +26,7 @@ program
 program
     .command('get-config [key]')
     .description('Display configuration. If key is supplied, will only output that item')
-    .action(handle_command('get_config'));
+    .action(handle_command('config/get'));
 
 program
     .command('get-certs')
@@ -38,25 +38,25 @@ program
     .option('--limit <max>',               'Maximum number of certificates to return', opt_int('limit'))
     .option('--spki-sha256 <spki-sha256>', 'Include only certificates whose public key (SPKI) matches the provided hash', opt_sha256('spki-sha256'))
     .description('List all certificates')
-    .action(handle_command('get_certs'));
+    .action(handle_command('certs/get_multi'));
 
 program
     .command('get-cert <sha256>')
     .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
     .description('Get a certificate')
-    .action(handle_command('get_cert'));
+    .action(handle_command('certs/get_one'));
 
 program
     .command('add-cert')
     .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
     .description('Add a certificate (reads as PEM from stdin)')
-    .action(handle_command('add_cert'));
+    .action(handle_command('certs/add'));
 
 if (devMode) {
     program.command('del-cert <sha256>')
         .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
         .description('Delete a certificate (DEV-MODE)')
-        .action(handle_command('del_cert'));
+        .action(handle_command('certs/delete'));
 }
 
 program
@@ -64,7 +64,7 @@ program
     .description('Add DNS zone file (reads bind compatible zone from stdin)')
     .option('-o, --org [org]', 'Organization. If not supplied, uses default organization')
     .option('--status [status]', 'Status for new hosts discovered in zone file: monitored, idle or archive')
-    .action(handle_command('add_dns_zone'));
+    .action(handle_command('dns_zone/add'));
 
 program.on('command:*', function () {
     console.error('Invalid command: %s\nSee --help for a list of available commands.', program.args.join(' '));
@@ -136,7 +136,9 @@ function exit_error(err) {
     process.exit(1);
 }
 
-function read_config() {
+function read_config(options) {
+    if (typeof options === 'undefined' || options === null) options = {};
+
     var config = {};
     if (fs.existsSync(configPath)) {
         config = JSON.parse(fs.readFileSync(configPath));
@@ -146,13 +148,16 @@ function read_config() {
 
     migrate_config(config);
 
-    Object.keys(process.env).forEach(function(envName){
-        var m = envName.match(/^HZ_(.+)$/);
-        if (!m) return;
-        var name = m[1].toLowerCase();
-        if (name === 'cli_version') return;
-        config[name] = process.env[envName];
-    });
+    if (!options.no_env) {
+        Object.keys(process.env).forEach(function(envName){
+            var m = envName.match(/^HZ_(.+)$/);
+            if (!m) return;
+            var name = m[1].toLowerCase();
+            if (name === 'cli_version') return;
+            config[name] = process.env[envName];
+        });
+    }
+
     return config;
 }
 
