@@ -64,7 +64,7 @@ Options:
   --file, -f    Read cert from disk instead of stdin
 ```
 
-### Command: config
+### Configuration
 
 Before you can run most commands, you will need to configure your credentials and
 a few other things by running `hardenize config init`
@@ -82,6 +82,10 @@ command line option to indicate a different path.
 
 Many commands take an optional "--org" option. If you do not supply that arg, it will
 use the configured default org instead, or fail if there is none.
+
+You can override configuration values using environment variables prefixed with `HZ_`.
+For example, to override a configuration item named "username", you would set the
+environment variable `HZ_USERNAME`
 
 ## Development
 
