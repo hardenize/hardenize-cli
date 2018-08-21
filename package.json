@@ -1,6 +1,6 @@
 {
   "name": "@hardenize/cli",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Hardenize Limited",
   "license": "Apache-2.0",
   "description": "Hardenize CLI Tool",
