@@ -33,7 +33,7 @@ module.exports.catchError = function(err){
         if (err.data.errors) {
             err.data.errors.forEach(function(error){
                 var message = error.message;
-                if (error.param) message = error.param + ': ' + message;
+                if (error.param) message = '"' + error.param + '" param: ' + message;
                 console.error('Error: ' + message);
             });
         } else {
