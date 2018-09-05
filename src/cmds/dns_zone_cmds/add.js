@@ -52,7 +52,7 @@ function handle_cloudflare(argv) {
         .then(function(response){
             var zoneInfo = response.result[0];
             if (!zoneInfo) fail('Unable to locate zone at cloudflare');
-            return cf.dnsRecords.bindConfig(response.result[0].id);
+            return cf.dnsRecords.export(response.result[0].id);
         })
         .catch(fail)
         .then(function(zoneData){
