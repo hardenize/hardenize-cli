@@ -23,7 +23,6 @@ module.exports.init = function api(argv) {
         org:  orgLabel,
     };
     if (conf.base_url) apiConfig.url = conf.base_url;
-    if (process.env.HZ_DEV_MODE) apiConfig.devMode = true;
 
     return new HardenizeApi(apiConfig);
 };

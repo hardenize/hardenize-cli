@@ -31,8 +31,12 @@ Commands:
 
 Options:
   --version     Show version number                                     [boolean]
-  --config, -c  Path to configuration file   [default: "/home/picard/.hardenize"]
+  --config, -c  Path to configuration file
+                                    [string] [default: "/home/picard/.hardenize"]
+  --org         Organization (falls back to config default_org)          [string]
   --help        Show help                                               [boolean]
+
+Find our API documentation at https://www.hardenize.com/docs/api/v0/
 ```
 
 You can also get additional help on a per-command basis. E.g:
@@ -50,7 +54,9 @@ Commands:
 
 Options:
   --version     Show version number                                     [boolean]
-  --config, -c  Path to configuration file   [default: "/home/picard/.hardenize"]
+  --config, -c  Path to configuration file
+                                    [string] [default: "/home/picard/.hardenize"]
+  --org         Organization (falls back to config default_org)          [string]
   --help        Show help                                               [boolean]
 $ hardenize certs add help
 hardenize certs add
@@ -59,9 +65,11 @@ Add a certificate. (Reads PEM from stdin)
 
 Options:
   --version     Show version number                                     [boolean]
-  --config, -c  Path to configuration file   [default: "/home/picard/.hardenize"]
+  --config, -c  Path to configuration file
+                                    [string] [default: "/home/picard/.hardenize"]
+  --org         Organization (falls back to config default_org)          [string]
   --help        Show help                                               [boolean]
-  --file, -f    Read cert from disk instead of stdin
+  --file, -f    Read cert from disk instead of stdin                     [string]
 ```
 
 ### Configuration

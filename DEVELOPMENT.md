@@ -19,9 +19,3 @@ $ hardenize config set disable_tls_validation
 ```
 
 DO NOT LET THIS CODE FIND IT'S WAY INTO PRODUCTION!!!
-
-## Dev-mode
-
-If you set the environment variable `HZ_DEV_MODE`, there will be additional commands
-and options available to you. These will usually only work against a hardenize app server
-in development mode so are useless to people other than Hardenize Limited developers.
