@@ -28,7 +28,7 @@ exports.handler = function ls_certs_handler(argv) {
 
     api.init(argv).getCerts(opt)
         .then(function(response){
-            console.log(JSON.stringify(response.data, null, 2));
+            api.displayResults(argv, response.data.certs);
         })
         .catch(api.catchError);
 

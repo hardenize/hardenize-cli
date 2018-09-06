@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-var os   = require('os');
-var path = require('path');
-var api  = require('./src/api');
+var os     = require('os');
+var path   = require('path');
+var api    = require('./src/api');
 
 require('yargs')
     .epilogue('Find our API documentation at https://www.hardenize.com/docs/api/v' + api.version() + '/')
@@ -15,6 +15,10 @@ require('yargs')
     .option('org', {
         description: 'Organization (falls back to config default_org)',
         type:        'string',
+    })
+    .option('format', {
+        description: 'Output format (falls back to config "default_format", otherwise "yaml")',
+        choices:     ['yaml', 'json'],
     })
     .commandDir('src/cmds')
     .demandCommand()

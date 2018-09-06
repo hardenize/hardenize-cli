@@ -22,7 +22,7 @@ exports.handler = function edit_hosts_handler(argv) {
 
     api.init(argv).updateHosts(argv.hostnames, options)
         .then(function(response){
-            console.log(JSON.stringify(response.data, null, 2));
+            api.displayResults(argv, response.data);
         })
         .catch(api.catchError);
 }

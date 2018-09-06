@@ -36,6 +36,8 @@ Options:
   --config, -c  Path to configuration file
                                     [string] [default: "/home/picard/.hardenize"]
   --org         Organization (falls back to config default_org)          [string]
+  --format      Output format (falls back to config "default_format", otherwise
+                "yaml")                                 [choices: "yaml", "json"]
   --help        Show help                                               [boolean]
 
 Find our API documentation at https://www.hardenize.com/docs/api/v1/
@@ -84,6 +86,7 @@ $ hardenize config init
 * API Username: your api username
 * API Password: your api password
   Default organization: your default org
+  Default output format [yaml]: json
 Configuration saved
 ```
 
@@ -96,6 +99,11 @@ use the configured default org instead, or fail if there is none.
 You can override configuration values using environment variables prefixed with `HZ_`.
 For example, to override a configuration item named "username", you would set the
 environment variable `HZ_USERNAME`
+
+Most command simply display the results as returned from the API. By specifying
+`--format` on the command line, you can choose for them to be displayed in either
+`yaml` or `json` format. The output defaults to your configs `default_format` option,
+or `yaml` if that does not exist.
 
 ## Development
 

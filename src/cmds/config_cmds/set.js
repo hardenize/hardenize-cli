@@ -4,6 +4,7 @@ var settable = [
     'base_url',
     'cloudflare_email',
     'cloudflare_key',
+    'default_format',
     'default_org',
     'disable_tls_validation',
     'password',
@@ -20,6 +21,8 @@ module.exports.handler = function set_config_handler(argv) {
     var name  = argv.name;
     var value = argv.hasOwnProperty('value') ? argv.value : true;
 
+    if (name === 'default_format' && (value !== 'json' && value !== 'yaml')) fail('Invalid default_format. Must be either yaml or json');
+
     if (isValidConfigName(name)) {
         var conf = config.read(argv, { no_env: true });
         if (conf[name] === value) {
@@ -33,8 +36,7 @@ module.exports.handler = function set_config_handler(argv) {
             console.log(message);
         }
     } else {
-        console.error('Unknown configuration item: ' + name);
-        process.exit(1);
+        fail('Unknown configuration item: ' + name);
     }
 };
 
@@ -43,4 +45,10 @@ function isValidConfigName(name) {
         if (settable[i] === name) return true;
     }
     return false;
+}
+
+function fail(err) {
+    if (err instanceof Error) err = err.message;
+    console.error(err);
+    process.exit(1);
 }

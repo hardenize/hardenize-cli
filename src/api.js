@@ -1,5 +1,6 @@
 var HardenizeApi = require('@hardenize/api');
 var config       = require('./config');
+var YAML         = require('yaml').default;
 
 module.exports.init = function api(argv) {
     var conf = config.read(argv);
@@ -25,6 +26,25 @@ module.exports.init = function api(argv) {
     if (conf.base_url) apiConfig.url = conf.base_url;
 
     return new HardenizeApi(apiConfig);
+};
+
+module.exports.displayResults = function(argv, data) {
+
+    var format = argv.format;
+    if (!format) {
+        var conf = config.read(argv);
+        format = conf.default_format || 'yaml';
+    }
+    if (format !== 'json' && format !== 'yaml') {
+        console.error('Error: Invalid --format');
+        process.exit(1);
+    }
+
+    if (format === 'json') {
+        console.log(JSON.stringify(data, null, 2));
+    } else {
+        console.log(YAML.stringify(data).replace(/[\r\n]+$/, ''));
+    }
 };
 
 module.exports.catchError = function(err){

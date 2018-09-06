@@ -68,7 +68,7 @@ function call_api(argv, fetchOptions, qsOptions) {
         .then(function(response){
             var ct = response.res.headers.get('Content-Type') || '';
             if (ct.match(/^application\/json(\s*;.*?)?$/i)) {
-                console.log(JSON.stringify(response.data, null, 2));
+                api.displayResults(argv, response.data);
             } else if (response.data) {
                 console.log(response.data);
             } else {

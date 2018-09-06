@@ -4,11 +4,11 @@ exports.command = 'get <hostname>';
 
 exports.desc = 'Get a host';
 
-exports.handler = function get_hosts_handler(argv) {
+exports.handler = function get_host_handler(argv) {
 
     api.init(argv).getHost(argv.hostname)
         .then(function(response){
-            console.log(JSON.stringify(response.data, null, 2));
+            api.displayResults(argv, response.data.host);
         })
         .catch(function(err){
             if (err.res && err.res.status === 404) {

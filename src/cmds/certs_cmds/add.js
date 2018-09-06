@@ -13,7 +13,7 @@ exports.builder = function(yargs) {
     });
 };
 
-exports.handler = function add_certs_handler(argv) {
+exports.handler = function add_cert_handler(argv) {
 
     if (argv.hasOwnProperty('file')) {
         fs.readFile(argv.file, function(err, data){
