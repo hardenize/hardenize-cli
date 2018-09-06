@@ -28,6 +28,7 @@ Commands:
   hardenize certs <command>     Manage certificates
   hardenize config <command>    Manage configuration
   hardenize dns-zone <command>  Manage dns zones
+  hardenize tags <command>      Manage tags
 
 Options:
   --version     Show version number                                     [boolean]
@@ -36,7 +37,7 @@ Options:
   --org         Organization (falls back to config default_org)          [string]
   --help        Show help                                               [boolean]
 
-Find our API documentation at https://www.hardenize.com/docs/api/v0/
+Find our API documentation at https://www.hardenize.com/docs/api/v1/
 ```
 
 You can also get additional help on a per-command basis. E.g:
@@ -50,7 +51,7 @@ Manage certificates
 Commands:
   hardenize certs add           Add a certificate. (Reads PEM from stdin)
   hardenize certs get <sha256>  Get a certificate
-  hardenize certs ls            List certificates
+  hardenize certs ls [host]     List certificates
 
 Options:
   --version     Show version number                                     [boolean]
