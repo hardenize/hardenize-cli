@@ -21,7 +21,7 @@ module.exports.handler = function set_config_handler(argv) {
     var name  = argv.name;
     var value = argv.hasOwnProperty('value') ? argv.value : true;
 
-    if (name === 'default_format' && (value !== 'json' && value !== 'yaml')) fail('Invalid default_format. Must be either yaml or json');
+    if (name === 'default_format' && (value !== 'json' && value !== 'yaml' && value !== 'csv')) fail('Invalid default_format. Must be either yaml or json or csv');
 
     if (isValidConfigName(name)) {
         var conf = config.read(argv, { no_env: true });

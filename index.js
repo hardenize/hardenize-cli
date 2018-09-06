@@ -18,7 +18,7 @@ require('yargs')
     })
     .option('format', {
         description: 'Output format (falls back to config "default_format", otherwise "yaml")',
-        choices:     ['yaml', 'json'],
+        choices:     ['yaml', 'json', 'csv'],
     })
     .commandDir('src/cmds')
     .demandCommand()

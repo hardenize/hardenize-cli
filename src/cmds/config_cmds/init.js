@@ -32,7 +32,7 @@ module.exports.handler = function init_config_handler(argv) {
         .then(function(default_format) {
             if (!default_format.length) default_format = conf.default_format || 'yaml';
             default_format = default_format.toLowerCase();
-            if (default_format !== 'yaml' && default_format !== 'json') fail('Invalid choice');
+            if (default_format !== 'yaml' && default_format !== 'json' && default_format !== 'csv') fail('Invalid choice. Must be yaml, json or csv');
             conf.default_format = default_format;
         })
         .then(function(){
