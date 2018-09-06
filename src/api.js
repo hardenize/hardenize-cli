@@ -41,15 +41,10 @@ module.exports.displayResults = function(argv, data) {
         process.exit(1);
     }
 
-    if (format === 'csv') {
-        data = [].concat(data).map(flattenObjectForCsv);
-        console.log(json2csv(data));
-    } else if (format === 'json') {
-        console.log(JSON.stringify(data, null, 2));
-    } else if (format === 'yaml') {
-        [].concat(data).forEach(function(item){
-            console.log('---\n' + YAML.stringify(item).replace(/[\r\n]+$/, ''));
-        });
+    switch (format) {
+        case 'csv':  printCsv(data);  break;
+        case 'json': printJson(data); break;
+        case 'yaml': printYaml(data); break;
     }
 };
 
@@ -79,14 +74,32 @@ module.exports.catchError = function(err){
 
 module.exports.version = HardenizeApi.version;
 
+function printCsv(data) {
+    var csvData = [].concat(data).reduce(function(o, row){
+        Object.keys(row).forEach(function(k){
+            row[k] = flattenObjectForCsv(row[k]);
+        });
+        o.push(row);
+        return o;
+    }, []);
+    console.log(json2csv(csvData));
+}
+
+function printJson(data) {
+    console.log(JSON.stringify(data, null, 2));
+}
+
+function printYaml(data) {
+    [].concat(data).forEach(function(item){
+        console.log('---\n' + YAML.stringify(item).replace(/[\r\n]+$/, ''));
+    });
+}
+
 function flattenObjectForCsv(obj) {
     if (Array.isArray(obj)) {
-        return obj.map(flattenObjectForCsv).join('|');
+        return obj.map(flattenObjectForCsv).join(', ');
     } else if (typeof obj === 'object') {
-        return Object.keys(obj).reduce(function(o, k){
-            o[k] = flattenObjectForCsv(obj[k]);
-            return o;
-        }, {});
+        return JSON.stringify(obj);
     }
     return obj;
 }
