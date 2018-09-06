@@ -43,7 +43,9 @@ module.exports.displayResults = function(argv, data) {
     if (format === 'json') {
         console.log(JSON.stringify(data, null, 2));
     } else {
-        console.log(YAML.stringify(data).replace(/[\r\n]+$/, ''));
+        [].concat(data).forEach(function(item){
+            console.log('---\n' + YAML.stringify(item).replace(/[\r\n]+$/, ''));
+        });
     }
 };
 
