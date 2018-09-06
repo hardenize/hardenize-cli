@@ -28,6 +28,7 @@ Commands:
   hardenize certs <command>     Manage certificates
   hardenize config <command>    Manage configuration
   hardenize dns-zone <command>  Manage dns zones
+  hardenize hosts <command>     Manage hosts
   hardenize tags <command>      Manage tags
 
 Options:
