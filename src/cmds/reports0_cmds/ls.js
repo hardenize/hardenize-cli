@@ -25,7 +25,7 @@ exports.handler = function ls_reports0_handler(argv) {
     api.init(argv).getReports0(opt)
         .then(function(response){
             if (format === 'csv') return console.log(response.data.replace(/[\r\n]+$/,''));
-            api.displayResults(argv, response.data.summaries);
+            api.displayResults(argv, response.data.reports);
         })
         .catch(api.catchError);
 
