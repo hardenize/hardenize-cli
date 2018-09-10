@@ -49,6 +49,7 @@ module.exports.displayResults = function(argv, data) {
 };
 
 module.exports.catchError = function(err){
+    if (typeof err === 'string') err = new Error(err);
 
     if (err.data) {
         if (err.data.errors) {
