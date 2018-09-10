@@ -43,8 +43,8 @@ function addCert(argv, data) {
     api.init(argv).addCert(data)
         .then(function(response){
             switch (response.res.status) {
-                case 201: console.log('Certificate successfully created. SHA256:', response.data.sha256); break;
-                case 202: console.log('Certificate already exists:',               response.data.sha256); break;
+                case 201: console.log('Certificate successfully created. SHA256:', response.data.cert.sha256); break;
+                case 202: console.log('Certificate already exists:',               response.data.cert.sha256); break;
             }
         })
         .catch(api.catchError);
