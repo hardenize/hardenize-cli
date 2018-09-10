@@ -7,10 +7,6 @@ exports.command = 'add <root>';
 exports.desc = 'Add a dns zone for the hostname <root>';
 
 exports.builder = function(yargs) {
-    yargs.option('status', {
-        description: 'Status for hosts found in zone file',
-        choices:     ['archive', 'idle', 'monitored'],
-    });
     yargs.option('file', {
         alias:       'f',
         description: 'Local path to zone file if src is file',
@@ -91,12 +87,8 @@ function handle_stdin(argv) {
 }
 
 function addZone(argv, data) {
-    var options = {};
-    if (argv.hasOwnProperty('status')) {
-        options.status = argv.status;
-    }
     api.init(argv)
-        .addDnsZone(argv.root, data, options)
+        .addDnsZone(argv.root, data)
         .then(function(_){
             console.log('Zone successfully added');
         })
