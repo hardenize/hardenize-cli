@@ -7,12 +7,12 @@ exports.desc = 'List reports';
 
 exports.builder = function(yargs) {
     yargs.option('subdomains', { type: 'boolean', description: 'Include all subdomains of the specified name' });
-    yargs.option('tag',        { type: 'string',  description: 'Return only reports from hosts with this tag' });
+    yargs.option('group',      { type: 'string',  description: 'Return only reports from hosts with this group' });
 }
 
 exports.handler = function ls_reports0_handler(argv) {
 
-    var opt = ['name', 'subdomains', 'tag']
+    var opt = ['name', 'subdomains', 'group']
         .reduce(function(o, name) {
             if (argv.hasOwnProperty(name)) o[name] = argv[name];
             return o;
