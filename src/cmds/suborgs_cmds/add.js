@@ -22,8 +22,8 @@ exports.handler = function add_suborg_handler(argv) {
         }, {})
 
     api.init(argv).addSubOrg(argv.id, options)
-        .then(function(){
-            console.log('Organization added');
+        .then(function(response){
+            api.displayResults(argv, response.data.org);
         })
         .catch(api.catchError);
 }
