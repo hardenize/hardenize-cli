@@ -9,7 +9,17 @@ function read_config(argv, options) {
 
     var config = {};
     if (fs.existsSync(argv.config)) {
-        config = JSON.parse(fs.readFileSync(argv.config));
+        var data;
+        try {
+            data = fs.readFileSync(argv.config);
+        } catch (err) {
+            fail('Failed to read config at', argv.config, '-', err.toString());
+        }
+        try {
+            config = JSON.parse(data);
+        } catch (err) {
+            fail('Failed to parse config at', argv.config, '-', err.toString());
+        }
     }
     if (!config.cli_version) config.cli_version = cli_version;
     if (config.base_url === 'https://www.hardenize.com') delete config.base_url;
@@ -52,4 +62,9 @@ function migrate_config(argv, options, config) {
     }
 
     return config;
+}
+
+function fail() {
+    console.error.apply(null, arguments);
+    process.exit(1);
 }
