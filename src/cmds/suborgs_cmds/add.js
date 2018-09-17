@@ -10,7 +10,7 @@ exports.builder = function(yargs) {
     yargs.option('api',    { type: 'boolean', description: 'Generate API credentials' });
 }
 
-exports.handler = function add_org_handler(argv) {
+exports.handler = function add_suborg_handler(argv) {
 
     var options = ['name', 'status', 'api']
         .reduce(function(o, name){
@@ -21,7 +21,7 @@ exports.handler = function add_org_handler(argv) {
             return o;
         }, {})
 
-    api.init(argv).addOrg(argv.id, options)
+    api.init(argv).addSubOrg(argv.id, options)
         .then(function(){
             console.log('Organization added');
         })

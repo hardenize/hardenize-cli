@@ -4,8 +4,8 @@ exports.command = 'rm <id>';
 
 exports.desc = 'Delete an organization';
 
-exports.handler = function rm_org_handler(argv) {
-    api.init(argv).deleteOrg(argv.id)
+exports.handler = function rm_suborg_handler(argv) {
+    api.init(argv).deleteSubOrg(argv.id)
         .then(function(){
             console.log('Organization deleted');
         })

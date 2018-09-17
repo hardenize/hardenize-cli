@@ -4,9 +4,9 @@ exports.command = 'ls';
 
 exports.desc = 'List organizations';
 
-exports.handler = function ls_orgs_handler(argv) {
+exports.handler = function ls_suborgs_handler(argv) {
 
-    api.init(argv).getOrgs()
+    api.init(argv).getSubOrgs()
         .then(function(response){
             api.displayResults(argv, response.data.orgs);
         })

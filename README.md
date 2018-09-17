@@ -44,7 +44,7 @@ Commands:
   hardenize dns-zones <command>  Manage dns zones
   hardenize groups <command>     Manage groups
   hardenize hosts <command>      Manage hosts
-  hardenize orgs <command>       Manage organizations
+  hardenize suborgs <command>    Manage organizations
   hardenize reports0 <command>   Manage reports (unstable)
 
 Options:

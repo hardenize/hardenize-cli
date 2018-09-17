@@ -1,8 +1,8 @@
 var api = require('../../api');
 
-exports.command = 'edit <hostnames...>';
+exports.command = 'update <hostnames...>';
 
-exports.desc = 'Edit hosts';
+exports.desc = 'Update hosts';
 
 exports.builder = function(yargs) {
     yargs.option('subdomains', { type: 'boolean', description: 'Apply to all the subdomains of the specified hosts' });
@@ -12,7 +12,7 @@ exports.builder = function(yargs) {
     yargs.option('groups',     { type: 'array',  description: 'List of groups for --group-op' });
 }
 
-exports.handler = function edit_hosts_handler(argv) {
+exports.handler = function update_hosts_handler(argv) {
 
     var options = {};
     var changes = {};
