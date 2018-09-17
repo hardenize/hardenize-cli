@@ -2,9 +2,9 @@ var fs     = require('fs');
 var api    = require('../../api');
 var config = require('../../config');
 
-exports.command = 'add <root>';
+exports.command = 'create <root>';
 
-exports.desc = 'Add a dns zone for the hostname <root>';
+exports.desc = 'Create a dns zone for the hostname <root>';
 
 exports.builder = function(yargs) {
     yargs.option('file', {
@@ -18,7 +18,7 @@ exports.builder = function(yargs) {
     });
 };
 
-exports.handler = function add_dns_zone_handler(argv) {
+exports.handler = function create_dns_zone_handler(argv) {
     switch (argv.src) {
         case 'stdin':      return handle_stdin(argv);
         case 'file':       return handle_file(argv);
@@ -52,7 +52,7 @@ function handle_cloudflare(argv) {
         })
         .catch(fail)
         .then(function(zoneData){
-            addZone(argv, zoneData);
+            createZone(argv, zoneData);
         })
         .catch(api.catchError);
 }
@@ -63,7 +63,7 @@ function handle_file(argv) {
 
     fs.readFile(argv.file, function(err, data){
         if (err) fail(err);
-        addZone(argv, data.toString());
+        createZone(argv, data.toString());
     });
 
 }
@@ -81,16 +81,16 @@ function handle_stdin(argv) {
     });
 
     process.stdin.on('end', function() {
-        addZone(argv, buffer);
+        createZone(argv, buffer);
     });
 
 }
 
-function addZone(argv, data) {
+function createZone(argv, data) {
     api.init(argv)
-        .addDnsZone(argv.root, data)
+        .createDnsZone(argv.root, data)
         .then(function(_){
-            console.log('Zone successfully added');
+            console.log('Zone successfully created');
         })
         .catch(api.catchError);
 }

@@ -1,23 +1,23 @@
 var api = require('../../api');
 
-exports.command = 'add <hostnames...>';
+exports.command = 'create <hostnames...>';
 
-exports.desc = 'Add hosts';
+exports.desc = 'Create hosts';
 
 exports.builder = function(yargs) {
     yargs.option('status', { type: 'string', description: 'Host status', choices: ['idle', 'monitored', 'archived'], required: true });
-    yargs.option('groups', { type: 'array',  description: 'List of groups to add' });
+    yargs.option('groups', { type: 'array',  description: 'List of groups to create' });
 }
 
-exports.handler = function add_hosts_handler(argv) {
+exports.handler = function create_hosts_handler(argv) {
 
     var options = {};
     if (argv.status) options.status = argv.status;
     if (argv.groups) options.groups = argv.groups;
 
-    api.init(argv).addHosts(argv.hostnames, options)
+    api.init(argv).createHosts(argv.hostnames, options)
         .then(function(){
-            console.log('Hosts added');
+            console.log('Hosts created');
         })
         .catch(api.catchError);
 }

@@ -1,9 +1,9 @@
 var fs  = require('fs');
 var api = require('../../api');
 
-exports.command = 'add';
+exports.command = 'create';
 
-exports.desc = 'Add a certificate. (Reads PEM from stdin)';
+exports.desc = 'Create a certificate. (Reads PEM from stdin)';
 
 exports.builder = function(yargs) {
     yargs.option('file', {
@@ -13,7 +13,7 @@ exports.builder = function(yargs) {
     });
 };
 
-exports.handler = function add_cert_handler(argv) {
+exports.handler = function create_cert_handler(argv) {
 
     if (argv.hasOwnProperty('file')) {
         fs.readFile(argv.file, function(err, data){
@@ -21,7 +21,7 @@ exports.handler = function add_cert_handler(argv) {
                 console.error(err.message);
                 process.exit(1);
             }
-            addCert(argv, data.toString());
+            createCert(argv, data.toString());
         });
     } else {
 
@@ -33,14 +33,14 @@ exports.handler = function add_cert_handler(argv) {
         });
 
         process.stdin.on('end', function() {
-            addCert(argv, buffer);
+            createCert(argv, buffer);
         });
     
     }
 };
 
-function addCert(argv, data) {
-    api.init(argv).addCert(data)
+function createCert(argv, data) {
+    api.init(argv).createCert(data)
         .then(function(response){
             switch (response.res.status) {
                 case 201: console.log('Certificate successfully created. SHA256:', response.data.cert.sha256); break;

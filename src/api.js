@@ -51,16 +51,12 @@ module.exports.displayResults = function(argv, data) {
 module.exports.catchError = function(err){
     if (typeof err === 'string') err = new Error(err);
 
-    if (err.data) {
-        if (err.data.errors) {
-            err.data.errors.forEach(function(error){
-                var message = error.message;
-                if (error.param) message = '"' + error.param + '" param: ' + message;
-                console.error('Error: ' + message);
-            });
-        } else {
-            console.error('Error: ' + JSON.stringify(err.data, null, 2));
-        }
+    if (err.data && err.data.errors && err.data.errors.length) {
+        err.data.errors.forEach(function(error){
+            var message = error.message;
+            if (error.param) message = '"' + error.param + '" param: ' + message;
+            console.error('Error: ' + message);
+        });
     } else {
         var message = err.message;
         if (err.res) {

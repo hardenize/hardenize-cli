@@ -68,7 +68,7 @@ hardenize certs <command>
 Manage certificates
 
 Commands:
-  hardenize certs add           Add a certificate. (Reads PEM from stdin)
+  hardenize certs create        Create a certificate. (Reads PEM from stdin)
   hardenize certs get <sha256>  Get a certificate
   hardenize certs ls [host]     List certificates
 
@@ -78,10 +78,10 @@ Options:
                                     [string] [default: "/home/picard/.hardenize"]
   --org         Organization (falls back to config default_org)          [string]
   --help        Show help                                               [boolean]
-$ hardenize certs add help
-hardenize certs add
+$ hardenize certs create help
+hardenize certs create
 
-Add a certificate. (Reads PEM from stdin)
+Creates a certificate. (Reads PEM from stdin)
 
 Options:
   --version     Show version number                                     [boolean]
