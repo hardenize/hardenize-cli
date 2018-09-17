@@ -5,7 +5,7 @@ This tool provides easy access to the [Hardenize](https://www.hardenize.com) API
 ## Install
 
 ```shell
-$ npm i -g @hardenize/cli
+$ sudo npm i -g @hardenize/cli
 ```
 
 Or:
@@ -13,7 +13,7 @@ Or:
 ```shell
 $ git clone https://github.com/hardenize/hardenize-cli
 $ cd hardenize-cli
-$ npm i -g
+$ sudo npm i -g
 ```
 
 ## Usage
