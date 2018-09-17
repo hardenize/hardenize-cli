@@ -16,6 +16,20 @@ $ cd hardenize-cli
 $ sudo npm i -g
 ```
 
+## Updating
+
+To see if there is a newer version (no output means you are):
+
+```shell
+$ sudo npm outdated -g @hardenize/cli
+```
+
+To upgrade to the latest version if you're not:
+
+```shell
+$ sudo npm i -g @hardenize/cli
+```
+
 ## Usage
 
 Run without arguments or with help/--help/-h to see the list of options:
