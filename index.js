@@ -20,6 +20,11 @@ require('yargs')
         description: 'Output format (falls back to config "default_format", otherwise "yaml")',
         choices:     ['yaml', 'json', 'csv'],
     })
+    .option('debug', {
+        alias:       'd',
+        type:        'boolean',
+        description: 'Displays debug information about API requests and responses',
+    })
     .commandDir('src/cmds')
     .demandCommand()
     .strict()

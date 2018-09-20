@@ -26,8 +26,33 @@ module.exports.init = function api(argv) {
     };
     if (conf.base_url) apiConfig.url = conf.base_url;
 
-    return new HardenizeApi(apiConfig);
+    var api = new HardenizeApi(apiConfig);
+
+    if (argv.debug) {
+        api.on('request', function(req){
+            console.warn('* Sending API Request: ' + req.method + ' ' + req.url);
+            debugHeaders(req.headers);
+            console.warn('');
+        });
+        api.on('response', function(res){
+            console.warn('* Received API Response: ' + res.status + ' ' + res.statusText);
+            debugHeaders(res.headers);
+            console.warn('');
+        });
+    }
+
+    return api;
 };
+
+function debugHeaders(headers){
+    for (var name of headers.keys()) {
+        var value = headers.get(name);
+        name = name.split(/-/).map(function(part){
+            return part[0].toUpperCase() + part.slice(1);
+        }).join('-');
+        console.warn('  ' + name + ': ' + value);
+    }
+}
 
 module.exports.displayResults = function(argv, data) {
 
