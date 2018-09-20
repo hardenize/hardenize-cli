@@ -29,14 +29,24 @@ module.exports.init = function api(argv) {
     var api = new HardenizeApi(apiConfig);
 
     if (argv.debug) {
+        var start_time;
         api.on('request', function(req){
-            console.warn('* Sending API Request: ' + req.method + ' ' + req.url);
+            start_time = Date.now();
+            console.warn('**** DEBUG: Sending API Request (+0ms)\n');
+            console.warn('  ' + req.method + ' ' + req.url);
             debugHeaders(req.headers);
+            debugBody(req.body, true);
             console.warn('');
         });
         api.on('response', function(res){
-            console.warn('* Received API Response: ' + res.status + ' ' + res.statusText);
+            console.warn('**** DEBUG: Received API Response (+' + (Date.now() - start_time) + 'ms)\n');
+            console.warn('  ' + res.status + ' ' + res.statusText + '\n');
             debugHeaders(res.headers);
+            console.warn('');
+        });
+        api.on('body', function(body){
+            console.warn('**** DEBUG: Received API Response Body (+' + (Date.now() - start_time) + 'ms)\n');
+            debugBody(body, false);
             console.warn('');
         });
     }
@@ -45,16 +55,28 @@ module.exports.init = function api(argv) {
 };
 
 function debugHeaders(headers){
+    console.warn('  Headers:');
     for (var name of headers.keys()) {
         var value = headers.get(name);
         name = name.split(/-/).map(function(part){
             return part[0].toUpperCase() + part.slice(1);
         }).join('-');
-        console.warn('  ' + name + ': ' + value);
+        console.warn('    ' + name + ': ' + value);
     }
 }
 
+function debugBody(body, mark) {
+    if (typeof body !== 'string' || body.length === 0) return;
+    if (mark) console.warn('  Body:');
+    var spacer = mark ? '    ' : '  ';
+    console.warn(body.split(/\r?\n/).map(function(line){
+        return spacer + line;
+    }).join('\n'));
+}
+
 module.exports.displayResults = function(argv, data) {
+
+    if (argv.debug) console.warn('**** DEBUG: Normal command output follows\n');
 
     var format = argv.format;
     if (!format) {
