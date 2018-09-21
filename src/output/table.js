@@ -84,7 +84,6 @@ function fixupTableHeaders(data, isList) {
 }
 
 function fixupTableHeader(header) {
-    header = header[0].toUpperCase() + header.slice(1); // Uppercase first char
     header = color.bold(header); // Bold
     return header;
 }
