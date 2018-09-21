@@ -39,6 +39,7 @@ $ hardenize help
 hardenize <command>
 
 Commands:
+  hardenize bash                 Show bash auto-completion script
   hardenize certs <command>      Manage certificates
   hardenize config <command>     Manage configuration
   hardenize dns-zones <command>  Manage dns zones

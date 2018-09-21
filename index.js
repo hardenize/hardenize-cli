@@ -25,6 +25,9 @@ require('yargs')
         type:        'boolean',
         description: 'Displays debug information about API requests and responses',
     })
+    .command('bash', 'Show bash auto-completion script', function(yargs){
+        yargs.completion('bash');
+    })
     .commandDir('src/cmds')
     .demandCommand()
     .strict()
