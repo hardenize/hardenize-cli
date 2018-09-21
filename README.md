@@ -124,4 +124,4 @@ Most command simply display the results as returned from the API. By specifying
 ## Development
 
 If you are a core developer of this library (you almost certainly aren't, unless you work for
-Hardenize Limited), you should check out [./DEVELOPMENT.md](DEVELOPMENT.md)
+Hardenize Limited), you should check out [DEVELOPMENT.md](https://github.com/hardenize/hardenize-cli/blob/master/DEVELOPMENT.md)

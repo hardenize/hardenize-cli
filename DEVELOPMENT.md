@@ -4,8 +4,8 @@ If you are not a core developer of this library (you almost certainly aren't, un
 
 ## Changing the API URL
 
-To change the API URL from `https://www.hardenize.com/org/demo/api/v0/something` to
-`https://www.example.com:8443/org/demo/api/v0/something`, manually a `base_url` option to your configuration:
+To change the API URL from `https://www.hardenize.com/org/demo/api/v1/something` to
+`https://www.example.com:8443/org/demo/api/v1/something`, manually a `base_url` option to your configuration:
 
 ```shell
 $ hardenize config set base_url https://example.com:8443
