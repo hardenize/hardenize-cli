@@ -44,8 +44,8 @@ Commands:
   hardenize dns-zones <command>  Manage dns zones
   hardenize groups <command>     Manage groups
   hardenize hosts <command>      Manage hosts
-  hardenize suborgs <command>    Manage organizations
   hardenize reports0 <command>   Manage reports (unstable)
+  hardenize suborgs <command>    Manage organizations
 
 Options:
   --version     Show version number                                     [boolean]
@@ -54,6 +54,8 @@ Options:
   --org         Organization (falls back to config default_org)          [string]
   --format      Output format (falls back to config "default_format", otherwise
                 "table")                [choices: "table", "yaml", "json", "csv"]
+  --debug, -d   Displays debug information about API requests and responses
+                                                                        [boolean]
   --help        Show help                                               [boolean]
 
 Find our API documentation at https://www.hardenize.com/docs/api/v1/
@@ -62,7 +64,6 @@ Find our API documentation at https://www.hardenize.com/docs/api/v1/
 You can also get additional help on a per-command basis. E.g:
 
 ```shell
-$ hardenize certs help
 hardenize certs <command>
 
 Manage certificates
@@ -77,17 +78,25 @@ Options:
   --config, -c  Path to configuration file
                                     [string] [default: "/home/picard/.hardenize"]
   --org         Organization (falls back to config default_org)          [string]
+  --format      Output format (falls back to config "default_format", otherwise
+                "table")                [choices: "table", "yaml", "json", "csv"]
+  --debug, -d   Displays debug information about API requests and responses
+                                                                        [boolean]
   --help        Show help                                               [boolean]
 $ hardenize certs create help
 hardenize certs create
 
-Creates a certificate. (Reads PEM from stdin)
+Create a certificate. (Reads PEM from stdin)
 
 Options:
   --version     Show version number                                     [boolean]
   --config, -c  Path to configuration file
                                     [string] [default: "/home/picard/.hardenize"]
   --org         Organization (falls back to config default_org)          [string]
+  --format      Output format (falls back to config "default_format", otherwise
+                "table")                [choices: "table", "yaml", "json", "csv"]
+  --debug, -d   Displays debug information about API requests and responses
+                                                                        [boolean]
   --help        Show help                                               [boolean]
   --file, -f    Read cert from disk instead of stdin                     [string]
 ```
