@@ -1,4 +1,3 @@
-var cmd   = require('../cmd');
 var color = require('cli-color');
 var table = require('table').table;
 
@@ -11,7 +10,6 @@ function printTable(data) {
     data = isList ? getTableArray(data) : getTableObject(data);
 
     var tableConfig = {
-        columns: {},
         border: {
             topBody:    '─', topJoin:    '┬', topLeft:    '┌', topRight:    '┐',
             bottomBody: '─', bottomJoin: '┴', bottomLeft: '└', bottomRight: '┘',
@@ -19,20 +17,58 @@ function printTable(data) {
             joinBody:   '─', joinLeft:   '├', joinRight:  '┤', joinJoin:    '┼',
         },
     };
-
-    data.forEach(function(row){
-        row.forEach(function(col, n){
-            var width = Math.min(col.length, 64);
-            if (!tableConfig.columns[n]) tableConfig.columns[n] = { width: width };
-            tableConfig.columns[n].width = Math.max(tableConfig.columns[n].width, width);
-        });
-    });
+    var columns = getColumnsConfig(data);
 
     fixupTableHeaders(data, isList);
 
-    if (Object.keys(tableConfig.columns).length === 0) return;
+    if (Object.keys(columns).length === 0) return;
 
+    tableConfig.columns = columns;
     console.log(table(data, tableConfig).replace(/[\r\n]+$/, ''));
+}
+
+function getColumnsConfig(data) {
+    var columns = {};
+
+    // Figure out the max width of data for each column
+    data.forEach(function(row){
+        row.forEach(function(col, n){
+            var width = col.length;
+            if (!columns[n]) columns[n] = { width: width };
+            columns[n].width = Math.max(columns[n].width, width);
+        });
+    });
+
+    // If the table is wider than the console, we want to apply some wrapping
+    if (tableWidth(columns) > process.stdout.columns) {
+
+        // Sort columns in ascending width order
+        var colNums = Object.keys(columns).sort(function(a,b) {
+            return a.width < b.width ? -1 : a.width > b.width ? 1 : 0;
+        });
+
+        // Restrict all columns (except the widest) to 64 chars max
+        colNums.slice(0, colNums.length-1).forEach(function(n){
+            columns[n].width = Math.min(64, columns[n].width);
+        });
+
+        // If the table is still wider than the console, shrink the widest
+        // column to fit. Don'y shrink further than 64 chars
+        var toDelete = tableWidth(columns) - process.stdout.columns;
+        if (toDelete > 0) {
+            var n     = colNums[colNums.length-1];
+            var width = columns[n].width - toDelete;
+            columns[n].width = Math.max(width, Math.min(columns[n].width,64));
+        }
+    }
+
+    return columns;
+}
+
+function tableWidth(columns) {
+    return Object.keys(columns).reduce(function(o, n){
+        return o + columns[n].width + 3;
+    }, 1);
 }
 
 function getTableArray(data) {
