@@ -30,6 +30,7 @@ require('yargs')
     })
     .commandDir('src/cmds')
     .demandCommand()
+    .recommendCommands()
     .strict()
     .help()
     .argv;
