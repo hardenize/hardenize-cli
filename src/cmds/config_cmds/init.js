@@ -1,4 +1,5 @@
 var readline = require('readline');
+var cmd      = require('../../cmd');
 var config   = require('../../config');
 
 module.exports.command = 'init';
@@ -28,11 +29,11 @@ module.exports.handler = function init_config_handler(argv) {
         .then(function(default_org) {
             if (default_org.length) conf.default_org = default_org;
         })
-        .then(question(rl, 'Default output format [' + (conf.default_format ? conf.default_format : 'yaml') + ']'))
+        .then(question(rl, 'Default output format [' + (conf.default_format ? conf.default_format : 'table') + ']'))
         .then(function(default_format) {
-            if (!default_format.length) default_format = conf.default_format || 'yaml';
+            if (!default_format.length) default_format = conf.default_format || 'table';
             default_format = default_format.toLowerCase();
-            if (default_format !== 'yaml' && default_format !== 'json' && default_format !== 'csv') fail('Invalid choice. Must be yaml, json or csv');
+            if (default_format !== 'yaml' && default_format !== 'json' && default_format !== 'csv' && default_format !== 'table') cmd.fail('Invalid choice. Must be table, yaml, json or csv');
             conf.default_format = default_format;
         })
         .then(function(){
@@ -50,10 +51,4 @@ function question(rl, question) {
             });
         });
     };
-}
-
-function fail(err) {
-    if (err instanceof Error) err = err.message;
-    console.error(err);
-    process.exit(1);
 }

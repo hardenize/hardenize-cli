@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'update <id>';
 
@@ -17,13 +17,12 @@ exports.handler = function update_suborg_handler(argv) {
     if (argv.generateApiCredentials) options.generateApiCredentials = true;
 
     if (Object.keys(options).length === 0) {
-        console.error('Must specify one or more of --status and --generate-api-credentials');
-        process.exit(1);
+        cmd.fail('Must specify one or more of --status and --generate-api-credentials');
     }
 
-    api.init(argv).updateSubOrg(argv.id, options)
+    cmd.api(argv).updateSubOrg(argv.id, options)
         .then(function(response){
-            api.displayResults(argv, response.data.org);
+            cmd.displayResults(argv, response.data.org);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }

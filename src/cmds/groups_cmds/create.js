@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'create <id>';
 
@@ -13,9 +13,9 @@ exports.handler = function create_group_handler(argv) {
     var options = {};
     if (argv.hasOwnProperty('name')) options.name = argv.name;
 
-    api.init(argv).createGroup(argv.id, options)
+    cmd.api(argv).createGroup(argv.id, options)
         .then(function(){
             console.log('Group created');
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }

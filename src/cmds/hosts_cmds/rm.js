@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'rm <hostnames...>';
 
@@ -13,9 +13,9 @@ exports.handler = function rm_hosts_handler(argv) {
     var options = {};
     if (argv.preview) options.preview = true;
 
-    api.init(argv).deleteHosts(argv.hostnames, options)
+    cmd.api(argv).deleteHosts(argv.hostnames, options)
         .then(function(response){
-            api.displayResults(argv, response.data);
+            cmd.displayResults(argv, response.data);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }

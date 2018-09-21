@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'ls [host]';
 
@@ -26,10 +26,10 @@ exports.handler = function ls_certs_handler(argv) {
     if (argv.hasOwnProperty('new-since'))      opt.newSince     = argv['new-since'];
     if (argv.hasOwnProperty('spki-sha256'))    opt.spkiSha256   = argv['spki-sha256'];
 
-    api.init(argv).getCerts(opt)
+    cmd.api(argv).getCerts(opt)
         .then(function(response){
-            api.displayResults(argv, response.data.certs);
+            cmd.displayResults(argv, response.data.certs);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 
 };

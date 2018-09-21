@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'ls';
 
@@ -6,10 +6,10 @@ exports.desc = 'List groups';
 
 exports.handler = function ls_groups_handler(argv) {
 
-    api.init(argv).getGroups()
+    cmd.api(argv).getGroups()
         .then(function(response){
-            api.displayResults(argv, response.data.groups);
+            cmd.displayResults(argv, response.data.groups);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 
 };

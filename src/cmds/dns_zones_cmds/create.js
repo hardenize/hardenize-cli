@@ -1,5 +1,5 @@
 var fs     = require('fs');
-var api    = require('../../api');
+var cmd    = require('../../cmd');
 var config = require('../../config');
 
 exports.command = 'create <root>';
@@ -33,8 +33,8 @@ function handle_cloudflare(argv) {
 
     var email = conf.cloudflare_email;
     var key   = conf.cloudflare_key;
-    if (!email) fail('No cloudflare_email configuration available');
-    if (!key)   fail('No cloudflare_key configuration available');
+    if (!email) cmd.fail('No cloudflare_email configuration available');
+    if (!key)   cmd.fail('No cloudflare_key configuration available');
 
     var cf = require('cloudflare')({
         email: email,
@@ -43,26 +43,26 @@ function handle_cloudflare(argv) {
 
     cf.zones.browse({ name: argv.root })
         .catch(function(err){
-            fail('Fetching zone from cloudflare - ' + err.message);
+            cmd.fail('Fetching zone from cloudflare - ' + err.message);
         })
         .then(function(response){
             var zoneInfo = response.result[0];
-            if (!zoneInfo) fail('Unable to locate zone at cloudflare');
+            if (!zoneInfo) cmd.fail('Unable to locate zone at cloudflare');
             return cf.dnsRecords.export(response.result[0].id);
         })
-        .catch(fail)
+        .catch(cmd.fail)
         .then(function(zoneData){
             createZone(argv, zoneData);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }
 
 function handle_file(argv) {
 
-    if (!argv.file) return fail('Missing --file argument');
+    if (!argv.file) return cmd.fail('Missing --file argument');
 
     fs.readFile(argv.file, function(err, data){
-        if (err) fail(err);
+        if (err) cmd.fail(err);
         createZone(argv, data.toString());
     });
 
@@ -70,7 +70,7 @@ function handle_file(argv) {
 
 function handle_stdin(argv) {
 
-    if (argv.file) return fail('Do not use --file when specifying --src stdin');
+    if (argv.file) cmd.fail('Do not use --file when specifying --src stdin');
 
     process.stdin.resume();
     process.stdin.setEncoding('utf8');
@@ -87,16 +87,17 @@ function handle_stdin(argv) {
 }
 
 function createZone(argv, data) {
-    api.init(argv)
+    cmd.api(argv)
         .createDnsZone(argv.root, data)
         .then(function(_){
             console.log('Zone successfully created');
         })
-        .catch(api.catchError);
-}
-
-function fail(err) {
-    if (err instanceof Error) err = err.message;
-    console.error(err);
-    process.exit(1);
+        .catch(function(err){
+            if (err.res && err.res.status === 400) {
+                if (err.data && typeof err.data === 'object' && Array.isArray(err.data.errors) && err.data.errors.length === 0) {
+                    cmd.fail('Unable to parse dns zone');
+                }
+            }
+            cmd.catchError(err);
+        });
 }

@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'ls [hostname]';
 
@@ -20,10 +20,10 @@ exports.handler = function ls_hosts_handler(argv) {
             return o;
         }, {});
 
-    api.init(argv).getHosts(opt)
+    cmd.api(argv).getHosts(opt)
         .then(function(response){
-            api.displayResults(argv, response.data.hosts);
+            cmd.displayResults(argv, response.data.hosts);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 
 };

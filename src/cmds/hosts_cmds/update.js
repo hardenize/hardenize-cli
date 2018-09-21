@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'update <hostnames...>';
 
@@ -27,9 +27,9 @@ exports.handler = function update_hosts_handler(argv) {
             if (argv.hasOwnProperty(name)) changes[name] = argv[name];
         });
 
-    api.init(argv).updateHosts(argv.hostnames, changes, options)
+    cmd.api(argv).updateHosts(argv.hostnames, changes, options)
         .then(function(response){
-            api.displayResults(argv, response.data);
+            cmd.displayResults(argv, response.data);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }

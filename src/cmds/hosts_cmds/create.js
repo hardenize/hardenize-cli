@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'create <hostnames...>';
 
@@ -15,9 +15,9 @@ exports.handler = function create_hosts_handler(argv) {
     if (argv.status) options.status = argv.status;
     if (argv.groups) options.groups = argv.groups;
 
-    api.init(argv).createHosts(argv.hostnames, options)
+    cmd.api(argv).createHosts(argv.hostnames, options)
         .then(function(){
             console.log('Hosts created');
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }

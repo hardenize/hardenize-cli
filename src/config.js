@@ -1,5 +1,6 @@
 var fs          = require('fs');
 var cli_version = require('../package.json').version;
+var cmd         = require('./cmd');
 
 module.exports.read  = read_config;
 module.exports.write = write_config;
@@ -13,12 +14,12 @@ function read_config(argv, options) {
         try {
             data = fs.readFileSync(argv.config);
         } catch (err) {
-            fail('Failed to read config at', argv.config, '-', err.toString());
+            cmd.fail('Failed to read config at', argv.config, '-', err.toString());
         }
         try {
             config = JSON.parse(data);
         } catch (err) {
-            fail('Failed to parse config at', argv.config, '-', err.toString());
+            cmd.fail('Failed to parse config at', argv.config, '-', err.toString());
         }
     }
     if (!config.cli_version) config.cli_version = cli_version;
@@ -62,9 +63,4 @@ function migrate_config(argv, options, config) {
     }
 
     return config;
-}
-
-function fail() {
-    console.error.apply(null, arguments);
-    process.exit(1);
 }

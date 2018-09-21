@@ -1,11 +1,11 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'rm <id>';
 
 exports.desc = 'Delete an organization';
 
 exports.handler = function rm_suborg_handler(argv) {
-    api.init(argv).deleteSubOrg(argv.id)
+    cmd.api(argv).deleteSubOrg(argv.id)
         .then(function(){
             console.log('Organization deleted');
         })
@@ -16,6 +16,6 @@ exports.handler = function rm_suborg_handler(argv) {
                     case 404: err = 'Organization doesn\'t exist';               break;
                 }
             }
-            api.catchError(err);
+            cmd.catchError(err);
         });
 }

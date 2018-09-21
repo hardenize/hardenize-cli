@@ -1,5 +1,5 @@
 var fs  = require('fs');
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'create';
 
@@ -17,10 +17,7 @@ exports.handler = function create_cert_handler(argv) {
 
     if (argv.hasOwnProperty('file')) {
         fs.readFile(argv.file, function(err, data){
-            if (err) {
-                console.error(err.message);
-                process.exit(1);
-            }
+            if (err) cmd.fail(err);
             createCert(argv, data.toString());
         });
     } else {
@@ -40,12 +37,19 @@ exports.handler = function create_cert_handler(argv) {
 };
 
 function createCert(argv, data) {
-    api.init(argv).createCert(data)
+    cmd.api(argv).createCert(data)
         .then(function(response){
             switch (response.res.status) {
                 case 201: console.log('Certificate successfully created. SHA256:', response.data.cert.sha256); break;
                 case 202: console.log('Certificate already exists:',               response.data.cert.sha256); break;
             }
         })
-        .catch(api.catchError);
+        .catch(function(err){
+            if (err.res && err.res.status === 400) {
+                if (err.data && typeof err.data === 'object' && Array.isArray(err.data.errors) && err.data.errors.length === 0) {
+                    cmd.fail('Unable to parse certificate');
+                }
+            }
+            cmd.catchError(err);
+        });
 }

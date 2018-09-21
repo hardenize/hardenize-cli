@@ -1,4 +1,4 @@
-var api = require('../../api');
+var cmd = require('../../cmd');
 
 exports.command = 'create <id>';
 
@@ -21,9 +21,9 @@ exports.handler = function create_suborg_handler(argv) {
             return o;
         }, {})
 
-    api.init(argv).createSubOrg(argv.id, options)
+    cmd.api(argv).createSubOrg(argv.id, options)
         .then(function(response){
-            api.displayResults(argv, response.data.org);
+            cmd.displayResults(argv, response.data.org);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }

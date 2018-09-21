@@ -1,3 +1,4 @@
+var cmd    = require('../../cmd');
 var config = require('../../config');
 
 var settable = [
@@ -21,7 +22,7 @@ module.exports.handler = function set_config_handler(argv) {
     var name  = argv.name;
     var value = argv.hasOwnProperty('value') ? argv.value : true;
 
-    if (name === 'default_format' && (value !== 'json' && value !== 'yaml' && value !== 'csv')) fail('Invalid default_format. Must be either yaml or json or csv');
+    if (name === 'default_format' && (value !== 'table' && value !== 'json' && value !== 'yaml' && value !== 'csv')) cmd.fail('Invalid default_format. Must be either table, yaml or json or csv');
 
     if (isValidConfigName(name)) {
         var conf = config.read(argv, { no_env: true });
@@ -36,7 +37,7 @@ module.exports.handler = function set_config_handler(argv) {
             console.log(message);
         }
     } else {
-        fail('Unknown configuration item: ' + name);
+        cmd.fail('Unknown configuration item:', name);
     }
 };
 
@@ -45,10 +46,4 @@ function isValidConfigName(name) {
         if (settable[i] === name) return true;
     }
     return false;
-}
-
-function fail(err) {
-    if (err instanceof Error) err = err.message;
-    console.error(err);
-    process.exit(1);
 }

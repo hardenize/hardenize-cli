@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-var os     = require('os');
-var path   = require('path');
-var api    = require('./src/api');
+var os   = require('os');
+var path = require('path');
+var cmd  = require('./src/cmd');
 
 require('yargs')
-    .epilogue('Find our API documentation at https://www.hardenize.com/docs/api/v' + api.version() + '/')
+    .epilogue('Find our API documentation at https://www.hardenize.com/docs/api/v' + cmd.api_version() + '/')
     .option('config', {
         alias:       'c',
         default:     path.join(os.homedir(), '.hardenize'),
@@ -17,8 +17,8 @@ require('yargs')
         type:        'string',
     })
     .option('format', {
-        description: 'Output format (falls back to config "default_format", otherwise "yaml")',
-        choices:     ['yaml', 'json', 'csv'],
+        description: 'Output format (falls back to config "default_format", otherwise "table")',
+        choices:     ['table', 'yaml', 'json', 'csv'],
     })
     .option('debug', {
         alias:       'd',

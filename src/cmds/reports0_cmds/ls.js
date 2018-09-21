@@ -1,5 +1,5 @@
 var config = require('../../config');
-var api    = require('../../api');
+var cmd    = require('../../cmd');
 
 exports.command = 'ls [name]';
 
@@ -22,11 +22,11 @@ exports.handler = function ls_reports0_handler(argv) {
     var format = argv.format || conf.default_format || 'yaml';
     if (format === 'csv') opt.format = 'csv';
 
-    api.init(argv).getReports0(opt)
+    cmd.api(argv).getReports0(opt)
         .then(function(response){
             if (format === 'csv') return console.log(response.data.replace(/[\r\n]+$/,''));
-            api.displayResults(argv, response.data.reports);
+            cmd.displayResults(argv, response.data.reports);
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 
 };

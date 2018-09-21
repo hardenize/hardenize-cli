@@ -1,3 +1,4 @@
+var cmd    = require('../../cmd');
 var config = require('../../config');
 
 exports.command = 'get [name]';
@@ -15,7 +16,6 @@ exports.handler = function get_config_handler(argv) {
     } else if (conf.hasOwnProperty(name)) {
         console.log(conf[name]);
     } else {
-        console.error('No such configuration item');
-        process.exit(1);
+        cmd.fail('No such configuration item');
     }
 }

@@ -1,6 +1,5 @@
-var fs     = require('fs');
-var api    = require('../api');
-var config = require('../config');
+var fs  = require('fs');
+var cmd = require('../cmd');
 
 module.exports.command = 'call <endpoint>';
 
@@ -52,7 +51,7 @@ module.exports.handler = function call_handler(argv) {
             });
         } else {
             fs.readFile(argv.body, function(err, data){
-                if (err) fail(err);
+                if (err) cmd.fail(err);
                 fetchOptions.body = data.toString();
                 call_api(argv, fetchOptions, qsOptions);        
             });
@@ -63,19 +62,20 @@ module.exports.handler = function call_handler(argv) {
 };
 
 function call_api(argv, fetchOptions, qsOptions) {
-    api.init(argv)
+    cmd.api(argv)
         .apiCall(argv.endpoint, fetchOptions, qsOptions)
         .then(function(response){
             var ct = response.res.headers.get('Content-Type') || '';
             if (ct.match(/^application\/json(\s*;.*?)?$/i)) {
-                api.displayResults(argv, response.data);
+                if (!argv.format) argv.format = 'json';
+                cmd.displayResults(argv, response.data);
             } else if (response.data) {
                 console.log(response.data);
             } else {
                 console.warn(response.res.status + ' ' + response.res.statusText);
             }
         })
-        .catch(api.catchError);
+        .catch(cmd.catchError);
 }
 
 function read_stdin(callback) {
@@ -91,10 +91,4 @@ function read_stdin(callback) {
     process.stdin.on('end', function() {
         callback(buffer);
     });
-}
-
-function fail(err) {
-    if (err instanceof Error) err = err.message;
-    console.error(err);
-    process.exit(1);
 }
