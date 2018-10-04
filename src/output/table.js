@@ -1,5 +1,7 @@
-var color = require('cli-color');
-var table = require('table').table;
+var color    = require('cli-color');
+var Table    = require('cli-table');
+var wrapAnsi = require('wrap-ansi');
+var YAML     = require('yaml').default;
 
 module.exports = printTable;
 
@@ -8,66 +10,85 @@ function printTable(data) {
     var isList = Array.isArray(data);
 
     data = isList ? getTableArray(data) : getTableObject(data);
+    if (data.length === 0 || data[0].length === 0) return;
 
-    var tableConfig = {
-        border: {
-            topBody:    '─', topJoin:    '┬', topLeft:    '┌', topRight:    '┐',
-            bottomBody: '─', bottomJoin: '┴', bottomLeft: '└', bottomRight: '┘',
-            bodyLeft:   '│', bodyRight:  '│', bodyJoin:   '│',
-            joinBody:   '─', joinLeft:   '├', joinRight:  '┤', joinJoin:    '┼',
-        },
-    };
-    var columns = getColumnsConfig(data);
+    var table = new Table();
 
-    fixupTableHeaders(data, isList);
+    colWidths(data,   isList);
+    boldHeaders(data, isList);
 
-    if (Object.keys(columns).length === 0) return;
-
-    tableConfig.columns = columns;
-    console.log(table(data, tableConfig).replace(/[\r\n]+$/, ''));
+    data.forEach(row => table.push(row));
+    console.log(table.toString());
 }
 
-function getColumnsConfig(data) {
+function colWidths(data, isList) {
+
     var columns = {};
 
     // Figure out the max width of data for each column
     data.forEach(function(row){
         row.forEach(function(col, n){
-            var width = col.length;
-            if (!columns[n]) columns[n] = { width: width };
-            columns[n].width = Math.max(columns[n].width, width);
+            if (!columns[n]) columns[n] = {
+                min: Math.max(12, isList ? (data[0][n].length + 2) : 0),
+            };
+            col.split(/\n/).forEach(function(line){
+                columns[n].max = Math.max(columns[n].max||0, line.length + 2);
+            });
         });
     });
 
+    var toDelete = tableWidth(columns) - process.stdout.columns;
+
     // If the table is wider than the console, we want to apply some wrapping
-    if (tableWidth(columns) > process.stdout.columns) {
+    while (toDelete > 0) {
 
-        // Sort columns in ascending width order
-        var colNums = Object.keys(columns).sort(function(a,b) {
-            return a.width < b.width ? -1 : a.width > b.width ? 1 : 0;
-        });
+        // Sort columns in ascending width order. (exclude those where the header
+        // width is already as small as it can be)
+        var colNums = Object.keys(columns)
+            .map(n=>parseInt(n, 10))
+            .filter(function(colNum){
+                if (!isList) return true;
+                var minWidth    = columns[colNum].min;
+                var maxWidth    = columns[colNum].max;
+                return maxWidth > minWidth;
+            }).sort(function(a,b) {
+                a = columns[a].max;
+                b = columns[b].max;
+                return a < b ? -1 : a > b ? 1 : 0;
+            });
 
-        // Restrict all columns (except the widest) to 64 chars max
-        colNums.slice(0, colNums.length-1).forEach(function(n){
-            columns[n].width = Math.min(64, columns[n].width);
-        });
+        if (colNums.length === 0) break;
 
-        // If the table is still wider than the console, shrink the widest
-        // column to fit. Don'y shrink further than 64 chars
-        var toDelete = tableWidth(columns) - process.stdout.columns;
-        if (toDelete > 0) {
-            var n     = colNums[colNums.length-1];
-            var width = columns[n].width - toDelete;
-            columns[n].width = Math.max(width, Math.min(columns[n].width,64));
+        // Figure out the widest and second widest column
+        var widestCol       = colNums[colNums.length - 1];
+        var nextWidestCol   = colNums[colNums.length - 2];
+        var widestWidth     = columns[widestCol].max || 0;
+        var nextWidestWidth = typeof nextWidestCol === 'undefined' ? null : columns[nextWidestCol].max;
+
+        var minWidth = isList ? data[0][widestCol].length : 10;
+
+        // Shrink the widest until it's either 1 char smaller than the second widest,
+        // or allows the table to fit the screen. Which either is larger
+        if (widestWidth >= nextWidestWidth) {
+            var minWidth = columns[widestCol].min;
+            var newWidth = Math.max(widestWidth - toDelete, nextWidestWidth - 1, minWidth);
+            columns[widestCol].max = newWidth;
         }
+
+        toDelete = tableWidth(columns) - process.stdout.columns;
     }
 
-    return columns;
+    data.forEach(function(row){
+        Object.keys(columns).forEach(function(n){
+            row[n] = wrapText(row[n], columns[n].max);
+        });
+    });
+    return Object.keys(columns).map(n => parseInt(n, 10)).sort().map(n => columns[n].max);
 }
 
 function tableWidth(columns) {
     return Object.keys(columns).reduce(function(o, n){
-        return o + columns[n].width + 3;
+        return o + columns[n].max + 1;
     }, 1);
 }
 
@@ -107,23 +128,6 @@ function getTableObject(data) {
     }, []);
 }
 
-function fixupTableHeaders(data, isList) {
-    if (isList) {
-        if (data.length) data[0] = data[0].map(function(col){
-            return fixupTableHeader(col);
-        });
-    } else {
-        data.forEach(function(row){
-            row[0] = fixupTableHeader(row[0]);
-        });
-    }
-}
-
-function fixupTableHeader(header) {
-    header = color.bold(header); // Bold
-    return header;
-}
-
 function tableSortColumns(cols) {
     var highPri = [ 'id', 'title', 'name', 'hostname' ];
     return cols.sort(function(a, b){
@@ -137,12 +141,43 @@ function tableSortColumns(cols) {
 
 function flattenObject(obj) {
     if (Array.isArray(obj)) {
-        return obj.map(flattenObject).join(', ');
+        return flattenObject(YAML.stringify(obj));
     } else if (obj === null || typeof obj === 'undefined') {
         return '';
     } else if (typeof obj === 'object') {
-        return JSON.stringify(obj);
+        return flattenObject(YAML.stringify(obj));
     } else {
-        return String(obj).replace(/\s*[\r\n]+\s*/g, ', ');
+        return String(obj).replace(/\r\n/g, '\n').replace(/\n+$/,'');
+    }
+}
+
+function wrapText(str, len) {
+    str = wrapAnsi(str, len, { trim: false });
+
+    const rx = new RegExp('([^\\n]{' + (len-2) + '})([^\\n].*)');
+
+    return str.split(/\n/).map(function(line){
+        var lines = [];
+        while(true) {
+            const m = line.match(rx);
+            if (m) {
+                lines.push(m[1]);
+                line = m[2];
+            } else {
+                lines.push(line);
+                return lines.join('\n');
+            }
+        }
+    }).join('\n');
+}
+
+function boldHeaders(data, isList) {
+    if (!data.length) return;
+    if (isList) {
+        data[0] = data[0].map(h => color.bold(h));
+    } else {
+        data.forEach(function(row){
+            row[0] = color.bold(row[0]);
+        });
     }
 }
