@@ -125,7 +125,7 @@ function fixupTableHeader(header) {
 }
 
 function tableSortColumns(cols) {
-    var highPri = [ 'id', 'name', 'hostname' ];
+    var highPri = [ 'id', 'title', 'name', 'hostname' ];
     return cols.sort(function(a, b){
         for (var i = 0; i < highPri.length; ++i) {
             if (a === highPri[i]) return -1;
@@ -143,6 +143,6 @@ function flattenObject(obj) {
     } else if (typeof obj === 'object') {
         return JSON.stringify(obj);
     } else {
-        return String(obj);
+        return String(obj).replace(/\s*[\r\n]+\s*/g, ', ');
     }
 }
