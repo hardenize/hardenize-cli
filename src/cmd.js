@@ -1,11 +1,12 @@
-var HardenizeApi = require('@hardenize/api');
-var color        = require('cli-color');
-var config       = require('./config');
-var debug        = require('./debug');
-var printCsv     = require('./output/csv');
-var printJson    = require('./output/json');
-var printTable   = require('./output/table');
-var printYaml    = require('./output/yaml');
+var HardenizeApi     = require('@hardenize/api');
+var color            = require('cli-color');
+var config           = require('./config');
+var debug            = require('./debug');
+var printCsv         = require('./output/csv');
+var printJson        = require('./output/json');
+var printTable       = require('./output/table');
+var printTablePerRow = require('./output/tablePerRow');
+var printYaml        = require('./output/yaml');
 
 module.exports.api            = api;
 module.exports.api_version    = HardenizeApi.version;
@@ -14,6 +15,14 @@ module.exports.displayResults = displayResults;
 module.exports.error          = error;
 module.exports.fail           = fail;
 module.exports.warn           = warn;
+
+var validFormats = [
+    'table',
+    'table-per-row',
+    'json',
+    'yaml',
+    'csv',
+];
 
 function api(argv) {
     var conf = config.read(argv);
@@ -70,15 +79,18 @@ function displayResults(argv, data) {
         var conf = config.read(argv);
         format = conf.default_format || 'table';
     }
-    if (format !== 'json' && format !== 'yaml' && format !== 'csv' && format !== 'table') {
-        fail('Invalid --format');
-    }
+    var validFormat = false;
+    validFormats.forEach(function(f){
+        if(f === format) validFormat = true;
+    });
+    if (!validFormat) fail('Invalid --format');
 
     switch (format) {
-        case 'csv':   printCsv(data);  break;
-        case 'json':  printJson(data); break;
-        case 'table': printTable(data); break;
-        case 'yaml':  printYaml(data); break;
+        case 'csv':           printCsv(data);         break;
+        case 'json':          printJson(data);        break;
+        case 'table':         printTable(data);       break;
+        case 'table-per-row': printTablePerRow(data); break;
+        case 'yaml':          printYaml(data);        break;
     }
 }
 

@@ -29,10 +29,10 @@ function colWidths(data, isList) {
     data.forEach(function(row){
         row.forEach(function(col, n){
             if (!columns[n]) columns[n] = {
-                min: Math.max(12, isList ? (data[0][n].length + 2) : 0),
+                min: Math.max(10, isList ? (data[0][n].length) : 0),
             };
             col.split(/\n/).forEach(function(line){
-                columns[n].max = Math.max(columns[n].max||0, line.length + 2);
+                columns[n].max = Math.max(columns[n].max||0, line.length);
             });
         });
     });
@@ -42,26 +42,27 @@ function colWidths(data, isList) {
     // If the table is wider than the console, we want to apply some wrapping
     while (toDelete > 0) {
 
-        // Sort columns in ascending width order. (exclude those where the header
-        // width is already as small as it can be)
+        // Extract a list of columns (the indexes) which can be shrunk. Sort them
+        // in descending order of size (so the first element is the index of the
+        // widest column which can be shrunk)
         var colNums = Object.keys(columns)
-            .map(n=>parseInt(n, 10))
+            .map(n => parseInt(n, 10))
             .filter(function(colNum){
                 if (!isList) return true;
                 var minWidth    = columns[colNum].min;
                 var maxWidth    = columns[colNum].max;
                 return maxWidth > minWidth;
-            }).sort(function(a,b) {
+            }).sort(function(a, b) {
                 a = columns[a].max;
                 b = columns[b].max;
-                return a < b ? -1 : a > b ? 1 : 0;
+                return a < b ? 1 : a > b ? -1 : 0;
             });
 
         if (colNums.length === 0) break;
 
         // Figure out the widest and second widest column
-        var widestCol       = colNums[colNums.length - 1];
-        var nextWidestCol   = colNums[colNums.length - 2];
+        var widestCol       = colNums[0];
+        var nextWidestCol   = colNums[1];
         var widestWidth     = columns[widestCol].max || 0;
         var nextWidestWidth = typeof nextWidestCol === 'undefined' ? null : columns[nextWidestCol].max;
 
@@ -80,16 +81,17 @@ function colWidths(data, isList) {
 
     data.forEach(function(row){
         Object.keys(columns).forEach(function(n){
-            row[n] = wrapText(row[n], columns[n].max);
+            row[n] = wrapText(row[n], columns[n].max, isList);
         });
     });
+
     return Object.keys(columns).map(n => parseInt(n, 10)).sort().map(n => columns[n].max);
 }
 
 function tableWidth(columns) {
     return Object.keys(columns).reduce(function(o, n){
-        return o + columns[n].max + 1;
-    }, 1);
+        return o + columns[n].max + 3;
+    }, 3);
 }
 
 function getTableArray(data) {
@@ -151,24 +153,15 @@ function flattenObject(obj) {
     }
 }
 
-function wrapText(str, len) {
-    str = wrapAnsi(str, len, { trim: false });
+function wrapText(str, len, isList) {
+    var str = wrapAnsi(str, len, { trim: false, hard: true });
 
-    const rx = new RegExp('([^\\n]{' + (len-2) + '})([^\\n].*)');
+    if (isList) {
+        var lines = str.replace(/[^\n]/g, '').length + 1;
+        if (lines > process.stdout.rows) return '<TOO LARGE FOR DISPLAY>';
+    }
 
-    return str.split(/\n/).map(function(line){
-        var lines = [];
-        while(true) {
-            const m = line.match(rx);
-            if (m) {
-                lines.push(m[1]);
-                line = m[2];
-            } else {
-                lines.push(line);
-                return lines.join('\n');
-            }
-        }
-    }).join('\n');
+    return str;
 }
 
 function boldHeaders(data, isList) {

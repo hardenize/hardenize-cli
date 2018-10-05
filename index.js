@@ -18,7 +18,7 @@ require('yargs')
     })
     .option('format', {
         description: 'Output format (falls back to config "default_format", otherwise "table")',
-        choices:     ['table', 'yaml', 'json', 'csv'],
+        choices:     ['table', 'yaml', 'json', 'csv', 'table-per-row'],
     })
     .option('debug', {
         alias:       'd',

@@ -49,15 +49,16 @@ Commands:
   hardenize suborgs <command>    Manage organizations
 
 Options:
-  --version     Show version number                                     [boolean]
+  --version     Show version number                                    [boolean]
   --config, -c  Path to configuration file
-                                    [string] [default: "/home/picard/.hardenize"]
-  --org         Organization (falls back to config default_org)          [string]
+                                   [string] [default: "/home/picard/.hardenize"]
+  --org         Organization (falls back to config default_org)         [string]
   --format      Output format (falls back to config "default_format", otherwise
-                "table")                [choices: "table", "yaml", "json", "csv"]
+                "table")
+                      [choices: "table", "table-per-row", "yaml", "json", "csv"]
   --debug, -d   Displays debug information about API requests and responses
-                                                                        [boolean]
-  --help        Show help                                               [boolean]
+                                                                       [boolean]
+  --help        Show help                                              [boolean]
 
 Find our API documentation at https://www.hardenize.com/docs/api/v1/
 ```
@@ -128,8 +129,8 @@ environment variable `HZ_USERNAME`
 
 Most command simply display the results as returned from the API. By specifying
 `--format` on the command line, you can choose for them to be displayed in either
-`table`, `yaml`, `json` or `csv` format. The output defaults to your configs
-`default_format` option, or `table` if that does not exist.
+`table`, `table-per-row`, `yaml`, `json` or `csv` format. The output defaults to your
+configs `default_format` option, or `table` if that does not exist.
 
 ## Development
 

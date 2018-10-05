@@ -2,6 +2,14 @@ var readline = require('readline');
 var cmd      = require('../../cmd');
 var config   = require('../../config');
 
+var validFormats = [
+    'table',
+    'table-per-row',
+    'json',
+    'yaml',
+    'csv',
+];
+
 module.exports.command = 'init';
 
 module.exports.desc = 'Interactively initialise  configuration';
@@ -33,7 +41,13 @@ module.exports.handler = function init_config_handler(argv) {
         .then(function(default_format) {
             if (!default_format.length) default_format = conf.default_format || 'table';
             default_format = default_format.toLowerCase();
-            if (default_format !== 'yaml' && default_format !== 'json' && default_format !== 'csv' && default_format !== 'table') cmd.fail('Invalid choice. Must be table, yaml, json or csv');
+
+            var valid = false;
+            validFormats.forEach(function(f){
+                if (f === default_format) valid = true;
+            });
+            if (!valid) cmd.fail('Invalid choice. Must be one of: ' + validFormats.join(', '));
+
             conf.default_format = default_format;
         })
         .then(function(){
