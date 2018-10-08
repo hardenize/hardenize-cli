@@ -65,12 +65,23 @@ function call_api(argv, fetchOptions, qsOptions) {
     cmd.api(argv)
         .apiCall(argv.endpoint, fetchOptions, qsOptions)
         .then(function(response){
-            var ct = response.res.headers.get('Content-Type') || '';
+            var ct   = response.res.headers.get('Content-Type') || '';
+            var data = response.data;
             if (ct.match(/^application\/json(\s*;.*?)?$/i)) {
-                if (!argv.format) argv.format = 'json';
-                cmd.displayResults(argv, response.data);
-            } else if (response.data) {
-                console.log(response.data);
+                if (argv.format !== 'json') {
+                    /**
+                     * Lots of our responses look like {"something":{ ...theDataToDisplay }}. The "call" operation
+                     * has no knowledge of the API end-point it's calling, so doesn't know what "something" is. Here
+                     * we attempt to figure it out and extract theDataToDisplay.
+                     */
+                    if (typeof data === 'object' && data !== null && !Array.isArray(data)) {
+                        var keys = Object.keys(data);
+                        if (keys.length === 1) data = data[keys[0]];
+                    }
+                }
+                cmd.displayResults(argv, data);
+            } else if (data) {
+                console.log(data);
             } else {
                 console.warn(response.res.status + ' ' + response.res.statusText);
             }
