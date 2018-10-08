@@ -43,6 +43,7 @@ Commands:
   hardenize certs <command>      Manage certificates
   hardenize config <command>     Manage configuration
   hardenize dns-zones <command>  Manage dns zones
+  hardenize events <command>     Manage events
   hardenize groups <command>     Manage groups
   hardenize hosts <command>      Manage hosts
   hardenize reports0 <command>   Manage reports (unstable)
