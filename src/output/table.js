@@ -31,8 +31,10 @@ function colWidths(data, isList) {
             if (!columns[n]) columns[n] = {
                 min: Math.max(10, isList ? (data[0][n].length) : 0),
             };
-            col.split(/\n/).forEach(function(line){
-                columns[n].max = Math.max(columns[n].max||0, line.length);
+            const lines = col.split(/\n/);
+            lines.forEach(function(line, num){
+                const lineLength = line.length + (lines.length > 1 ? 1 : 0);
+                columns[n].max = Math.max(columns[n].max||0, lineLength);
             });
         });
     });
@@ -142,11 +144,22 @@ function tableSortColumns(cols) {
 }
 
 function flattenObject(obj) {
-    if (Array.isArray(obj)) {
-        return flattenObject(YAML.stringify(obj));
-    } else if (obj === null || typeof obj === 'undefined') {
+    if (obj === null || typeof obj === 'undefined') {
         return '';
     } else if (typeof obj === 'object') {
+        if (Array.isArray(obj)) {
+            if (obj.length === 0) return '';
+            if (obj.length === 1) return flattenObject(obj[0]);
+
+            if (obj.every(i => typeof i === 'string' || typeof i === 'number')) {
+                return obj.sort(function(a,b){
+                    if (typeof a === 'string') a = a.toLowerCase();
+                    if (typeof b === 'string') b = b.toLowerCase();
+                    return a < b ? -1 : a > b ? 1 : 0;
+                }).map(flattenObject).join('\n');
+            }
+        }
+        console.log(obj, YAML.stringify(obj));
         return flattenObject(YAML.stringify(obj));
     } else {
         return String(obj).replace(/\r\n/g, '\n').replace(/\n+$/,'');
