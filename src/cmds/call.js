@@ -14,7 +14,7 @@ module.exports.builder = function(yargs) {
         type:        'array',
     });
     yargs.option('body', {
-        description: 'HTTP request body',
+        description: 'File containing HTTP request body. If filename starts with "{" or "[", then is treated as JSON instead of a file. If blank, reads body from stdin instead',
         type:        'string',
     });
     yargs.option('content-type', {
@@ -44,16 +44,22 @@ module.exports.handler = function call_handler(argv) {
     }
 
     if (argv.hasOwnProperty('body')) {
+
+        if (argv.method === 'get') cmd.fail('When supplying a body, you must specify a request method (not "get")');
+
         if (argv.body === '') {
             read_stdin(function(data){
                 fetchOptions.body = data;
-                call_api(argv, fetchOptions, qsOptions);        
+                call_api(argv, fetchOptions, qsOptions);
             });
+        } else if (argv.body.match(/^[{\[]/) && isValidJSON(argv.body)) {
+            fetchOptions.body = argv.body;
+            call_api(argv, fetchOptions, qsOptions);
         } else {
             fs.readFile(argv.body, function(err, data){
                 if (err) cmd.fail(err);
                 fetchOptions.body = data.toString();
-                call_api(argv, fetchOptions, qsOptions);        
+                call_api(argv, fetchOptions, qsOptions);
             });
         }
     } else {
@@ -102,4 +108,12 @@ function read_stdin(callback) {
     process.stdin.on('end', function() {
         callback(buffer);
     });
+}
+
+function isValidJSON(str) {
+    try {
+        JSON.parse(str);
+        return true;
+    } catch(err) {}
+    return false;
 }
