@@ -159,7 +159,6 @@ function flattenObject(obj) {
                 }).map(flattenObject).join('\n');
             }
         }
-        console.log(obj, YAML.stringify(obj));
         return flattenObject(YAML.stringify(obj));
     } else {
         return String(obj).replace(/\r\n/g, '\n').replace(/\n+$/,'');
