@@ -9,6 +9,8 @@ function printTable(data) {
 
     var isList = Array.isArray(data);
 
+    if (isList && data.length === 1) return printTable(data[0]);
+
     data = isList ? getTableArray(data) : getTableObject(data);
     if (data.length === 0 || data[0].length === 0) return;
 
