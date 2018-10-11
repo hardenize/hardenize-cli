@@ -54,10 +54,10 @@ function catchError(err) {
     if (typeof err === 'string') err = new Error(err);
 
     if (err.data && err.data.errors && err.data.errors.length) {
-        err.data.errors.forEach(function(error){
-            var message = error.message;
-            if (error.param) message = '"' + error.param + '" param: ' + message;
-            warn(message);
+        err.data.errors.forEach(function(err){
+            var message = err.message;
+            if (err.param) message = '"' + err.param + '" param: ' + message;
+            error(message);
         });
         fail();
     } else {
@@ -70,7 +70,7 @@ function catchError(err) {
     }
 }
 
-function displayResults(argv, data) {
+function displayResults(argv, data, options) {
 
     if (argv.debug) console.warn(color.blue('**** DEBUG: Normal command output follows\n'));
 
@@ -84,6 +84,18 @@ function displayResults(argv, data) {
         if(f === format) validFormat = true;
     });
     if (!validFormat) fail('Invalid --format');
+
+    if (options) {
+        var flatten = options[format] && options[format].flatten ? options[format].flatten : options.flatten;
+        if (flatten) {
+            ['request', 'response'].forEach(function(name){
+                Object.keys(data[name]||{}).forEach(function(k){
+                    data[name + '.' + k] = data[name][k];
+                });
+                delete data[name];
+            });
+        }
+    }
 
     switch (format) {
         case 'csv':           printCsv(data);         break;
