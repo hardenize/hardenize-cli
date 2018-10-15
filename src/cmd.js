@@ -79,6 +79,7 @@ function displayResults(argv, data, options) {
         var conf = config.read(argv);
         format = conf.default_format || 'table';
     }
+    if (format === 'table' && (!Array.isArray(data) || data.length === 1)) format = 'table-per-row';
     var validFormat = false;
     validFormats.forEach(function(f){
         if(f === format) validFormat = true;
@@ -89,10 +90,12 @@ function displayResults(argv, data, options) {
         var flatten = options[format] && options[format].flatten ? options[format].flatten : options.flatten;
         if (flatten) {
             [].concat(flatten).forEach(function(name){
-                Object.keys(data[name]||{}).forEach(function(k){
-                    data[name + '.' + k] = data[name][k];
+                [].concat(data).forEach(function(row){
+                    Object.keys(row[name]||{}).forEach(function(k){
+                        row[name + '.' + k] = row[name][k];
+                    });
+                    delete row[name];
                 });
-                delete data[name];
             });
         }
     }

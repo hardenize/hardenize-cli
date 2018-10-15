@@ -19,7 +19,13 @@ exports.handler = function ls_events_handler(argv) {
 
     cmd.api(argv).getEvents(opt)
         .then(function(response){
-            cmd.displayResults(argv, response.data.events);
+            var events = response.data.events;
+            var options = {};
+            if (opt.type) {
+                events.forEach(function(event){ delete event.type; });
+                options['table-per-row'] = { flatten: 'data' };
+            }
+            cmd.displayResults(argv, events, options);
         })
         .catch(cmd.catchError);
 
