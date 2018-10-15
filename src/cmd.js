@@ -88,7 +88,7 @@ function displayResults(argv, data, options) {
     if (options) {
         var flatten = options[format] && options[format].flatten ? options[format].flatten : options.flatten;
         if (flatten) {
-            ['request', 'response'].forEach(function(name){
+            [].concat(flatten).forEach(function(name){
                 Object.keys(data[name]||{}).forEach(function(k){
                     data[name + '.' + k] = data[name][k];
                 });
