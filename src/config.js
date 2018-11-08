@@ -23,7 +23,13 @@ function read_config(argv, options) {
         }
     }
     if (!config.cli_version) config.cli_version = cli_version;
-    if (config.base_url === 'https://www.hardenize.com') delete config.base_url;
+
+    if ([
+        'https://www.hardenize.com',
+        'https://api.hardenize.com',
+    ].some(u => u === config.base_url)) {
+        delete config.base_url;
+    }
 
     migrate_config(argv, options, config);
 
