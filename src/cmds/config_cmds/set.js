@@ -8,6 +8,7 @@ var settable = [
     'default_format',
     'default_org',
     'disable_tls_validation',
+    'legacy_path', // For talking to /org/$orgLabel/api/v1 instead of /org/$orgLabel/v1
     'password',
     'username',
 ];

@@ -43,7 +43,8 @@ function api(argv) {
         pass: conf.password,
         org:  orgLabel,
     };
-    if (conf.base_url) apiConfig.url = conf.base_url;
+    if (conf.base_url)    apiConfig.url = conf.base_url;
+    if (conf.legacy_path) apiConfig.legacy_path = true;
 
     var api = new HardenizeApi(apiConfig);
     if (argv.debug) debug(api);
