@@ -4,24 +4,9 @@ If you are not a core developer of this library (you almost certainly aren't, un
 
 ## Changing the API URL
 
-To change the API URL from `https://api.hardenize.com/org/demo/v1/something` to
-`https://api.example.com:8443/org/demo/v1/something`, manually a `base_url` option to your configuration:
+For local development, you need to change the API URL hostname, port and path, and also disable TLS validation:
 
 ```shell
-$ hardenize config set base_url https://api.example.com:8443
-```
-
-To switch the path from `/org/demo/v1/something` to `/org/demo/api/v1/something` (required for local dev), set `legacy_path`:
-
-```shell
-$ hardenize config set legacy_path
-```
-
-If there is a self signed certificate involved, you can disable TLS validation by adding the
-following to your configuration:
-
-```shell
+$ hardenize config set base_url https://local.hardenizer.com:8443/org/{org}/api/
 $ hardenize config set disable_tls_validation
 ```
-
-DO NOT LET THIS CODE FIND IT'S WAY INTO PRODUCTION!!!

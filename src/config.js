@@ -48,7 +48,6 @@ function read_config(argv, options) {
 
 function write_config(argv, config) {
     config.cli_version = cli_version;
-
     var create = !fs.existsSync(argv.config);
     fs.writeFileSync(argv.config, JSON.stringify(config, null, 2));
     if (create) fs.chmodSync(argv.config, 0600);
@@ -56,17 +55,23 @@ function write_config(argv, config) {
 
 function migrate_config(argv, options, config) {
 
-    if (config.cli_version === '0.0.1') {
-      var default_org;
-      Object.keys(config.orgs).forEach(function(org){
-          if (config.orgs[org].default) default_org = org;
-          config.username = config.username || config.orgs[org].username;
-          config.password = config.password || config.orgs[org].password;
-      });
-      delete config.orgs;
-      if (default_org) config.default_org = default_org;
-      write_config(argv, config);
+    let changed = false;
+    if (config.legacy_path) {
+        changed = true;
+        delete config.legacy_path;
     }
 
-    return config;
+    if (config.cli_version === '0.0.1') {
+        var default_org;
+        Object.keys(config.orgs).forEach(function(org){
+            if (config.orgs[org].default) default_org = org;
+            config.username = config.username || config.orgs[org].username;
+            config.password = config.password || config.orgs[org].password;
+        });
+        delete config.orgs;
+        if (default_org) config.default_org = default_org;
+        changed = true;
+    }
+
+    if (changed) write_config(argv, config);
 }
