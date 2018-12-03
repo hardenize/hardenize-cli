@@ -48,6 +48,7 @@ Commands:
   hardenize hosts <command>      Manage hosts
   hardenize reports0 <command>   Manage reports (unstable)
   hardenize suborgs <command>    Manage organizations
+  hardenize users <command>      Manage users
 
 Options:
   --version     Show version number                                    [boolean]
