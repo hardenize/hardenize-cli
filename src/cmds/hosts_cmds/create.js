@@ -5,7 +5,7 @@ exports.command = 'create <hostnames...>';
 exports.desc = 'Create hosts';
 
 exports.builder = function(yargs) {
-    yargs.option('status', { type: 'string', description: 'Host status', choices: ['idle', 'monitored', 'archived'], required: true });
+    yargs.option('status', { type: 'string', description: 'Host status', choices: ['idle', 'monitored', 'archived'] });
     yargs.option('groups', { type: 'array',  description: 'List of groups to create' });
 }
 
