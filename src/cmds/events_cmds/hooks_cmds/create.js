@@ -5,7 +5,7 @@ exports.command = 'create';
 exports.desc = 'Create an event hook';
 
 exports.builder = function(yargs) {
-    yargs.option('hook-type',   { required: true, type: 'string', description: 'Desired event hook type', choices: ['webhook'] });
+    yargs.option('hook-type',   { required: true, type: 'string', description: 'Desired event hook type', choices: ['pubsub', 'webhook'] });
     yargs.option('event-types', { required: true, type: 'array',  description: 'Event types to send to this event hook' });
     yargs.option('destination', { required: true, type: 'string', description: 'Event hook destination; for webhooks, this must be a HTTPS URL' });
 };
