@@ -1,3 +1,4 @@
+/*
 var cmd = require('../../../../cmd');
 
 exports.command = 'update <keyword>';
@@ -35,3 +36,4 @@ exports.handler = function update_host_discovery_keyword_handler(argv) {
         })
         .catch(cmd.catchError);
 };
+*/
