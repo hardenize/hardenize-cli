@@ -5,7 +5,7 @@ exports.command = 'create <keyword>';
 exports.desc = 'Create a host discovery keyword';
 
 exports.builder = function(yargs) {
-    yargs.option('exclusion', { type: 'array', description: 'Supply as "type:value", e.g: "substring:hardenize"' });
+//    yargs.option('exclusion', { type: 'array', description: 'Supply as "type:value", e.g: "substring:hardenize"' });
 };
 
 exports.handler = function create_host_discovery_keyword_handler(argv) {
