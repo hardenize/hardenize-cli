@@ -1,4 +1,4 @@
-var YAML = require('yaml').default;
+var YAML = require('yaml');
 var cmd  = require('../cmd');
 
 module.exports = printYaml;

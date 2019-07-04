@@ -1,7 +1,7 @@
 var color    = require('cli-color');
 var Table    = require('cli-table');
 var wrapAnsi = require('wrap-ansi');
-var YAML     = require('yaml').default;
+var YAML     = require('yaml');
 
 module.exports = printTable;
 
