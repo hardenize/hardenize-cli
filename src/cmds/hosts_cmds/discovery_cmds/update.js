@@ -1,28 +1,46 @@
 var cmd = require('../../../cmd');
 
-exports.command = 'update <id>';
+exports.command = 'update <ids...>';
 
-exports.desc = 'Updates a host discovery';
+exports.desc = 'Updates a host discoveries';
 
 exports.builder = function(yargs) {
-    yargs.option('resolution',         { type: 'string', description: 'Resolution to set', required: true });
-    yargs.option('effective-hostname', { type: 'string', description: 'Effective hostname to set' });
+    yargs.option('resolution',         { type: 'string',  description: 'Resolution to set', required: true });
+    yargs.option('effective-hostname', { type: 'string',  description: 'Effective hostname to set (only valid when updating a single discovery, and preview isn\'t set)' });
+    yargs.option('preview',            { type: 'boolean', description: 'Do not apply changes. Just return a list of discoveries that would have been affected' });
 };
 
 exports.handler = function update_host_discovery_handler(argv) {
 
-    var opt = {};
+    var changes = {};
+    var opt     = {};
 
-    if (argv.resolution)  opt.resolution = argv.resolution;
-    if (argv.effectiveHostname) opt.effectiveHostname = argv.effectiveHostname;
+    if (argv.resolution)  changes.resolution = argv.resolution;
+    if (argv.effectiveHostname) changes.effectiveHostname = argv.effectiveHostname;
+    if (argv.preview) opt.preview = true;
 
-    cmd.api(argv).updateHostDiscovery(argv.id, opt)
-        .then(function(response){
-            cmd.displayResults(argv, response.data.hostDiscovery);
-        })
-        .catch(function(err){
-            if (err.res && err.res.status === 404) cmd.fail('Discovery not found');
-            return Promise.reject(err);
-        })
-        .catch(cmd.catchError);
+    if (argv.ids.length === 1 && !argv.preview) {
+        cmd.api(argv).updateHostDiscovery(argv.ids[0], changes)
+            .then(function(response){
+                cmd.displayResults(argv, response.data.hostDiscovery);
+            })
+            .catch(function(err){
+                if (err.res && err.res.status === 404) cmd.fail('Discovery not found');
+                return Promise.reject(err);
+            })
+            .catch(cmd.catchError);
+    } else {
+        if (changes.hasOwnProperty('effectiveHostname')) {
+            if (opt.preview) {
+                cmd.fail('You can not use --effective-hostname and --preview together');
+            } else {
+                cmd.fail('You can not use --effective-hostname unless you have specified exactly 1 id');
+            }
+        }
+        cmd.api(argv).updateHostDiscoveries(argv.ids, changes, opt)
+            .then(function(response){
+                cmd.displayResults(argv, response.data.hostDiscoveries);
+            })
+            .catch(cmd.catchError);
+    }
 };
