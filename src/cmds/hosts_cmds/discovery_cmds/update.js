@@ -2,7 +2,7 @@ var cmd = require('../../../cmd');
 
 exports.command = 'update <ids...>';
 
-exports.desc = 'Updates a host discoveries';
+exports.desc = 'Updates host discoveries';
 
 exports.builder = function(yargs) {
     yargs.option('resolution',         { type: 'string',  description: 'Resolution to set', required: true });
@@ -10,7 +10,7 @@ exports.builder = function(yargs) {
     yargs.option('preview',            { type: 'boolean', description: 'Do not apply changes. Just return a list of discoveries that would have been affected' });
 };
 
-exports.handler = function update_host_discovery_handler(argv) {
+exports.handler = function update_host_discoveries_handler(argv) {
 
     var changes = {};
     var opt     = {};
