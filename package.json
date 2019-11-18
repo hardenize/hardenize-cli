@@ -20,13 +20,13 @@
     "build-openapi": "cd openapi && ./build.sh"
   },
   "dependencies": {
-    "@hardenize/api": "^0.20.0",
+    "@hardenize/api": "^0.21.0",
     "cli-color": "^1.4.0",
     "cli-table": "^0.3.1",
     "cloudflare": "git+https://github.com/hardenize/node-cloudflare.git#bind-config-plus-updates",
-    "json2csv": "^4.5.1",
-    "wrap-ansi": "^6.0.0",
-    "yaml": "^1.6.0",
-    "yargs": "^13.2.4"
+    "json2csv": "^4.5.4",
+    "wrap-ansi": "^6.2.0",
+    "yaml": "^1.7.2",
+    "yargs": "^13.3.0"
   }
 }
