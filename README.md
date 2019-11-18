@@ -39,16 +39,17 @@ $ hardenize help
 hardenize <command>
 
 Commands:
-  hardenize bash                 Show bash auto-completion script
-  hardenize certs <command>      Manage certificates
-  hardenize config <command>     Manage configuration
-  hardenize dns-zones <command>  Manage dns zones
-  hardenize events <command>     Manage events
-  hardenize groups <command>     Manage groups
-  hardenize hosts <command>      Manage hosts
-  hardenize reports0 <command>   Manage reports (unstable)
-  hardenize suborgs <command>    Manage organizations
-  hardenize users <command>      Manage users
+  hardenize bash                      Show bash auto-completion script
+  hardenize certs <command>           Manage certificates
+  hardenize config <command>          Manage configuration
+  hardenize dns-zones <command>       Manage dns zones
+  hardenize events <command>          Manage events
+  hardenize groups <command>          Manage groups
+  hardenize hosts <command>           Manage hosts
+  hardenize network-ranges <command>  Manage network ranges
+  hardenize reports0 <command>        Manage reports (unstable)
+  hardenize suborgs <command>         Manage organizations
+  hardenize users <command>           Manage users
 
 Options:
   --version     Show version number                                    [boolean]
