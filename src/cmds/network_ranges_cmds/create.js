@@ -14,7 +14,7 @@ exports.handler = function create_network_range_handler(argv) {
 
     var options = {
         label:       argv.label,
-        description: argv.label,
+        description: argv.description,
     };
     if (argv.scan) options.scan = argv.scan;
 
