@@ -37,8 +37,17 @@ function debugHeaders(headers){
 }
 
 function debugBody(body, mark) {
+    if (body instanceof Buffer) body = body.toString();
     if (typeof body !== 'string' || body.length === 0) return;
-    if (mark) console.warn('  Body:');
+    if (body.startsWith('{')) {
+        try {
+            body = JSON.stringify(JSON.parse(body), null, 2);
+        } catch (err) {
+            // Ignore. Just not JSON
+        }
+    }
+
+    if (mark) console.warn(color.bold('\n  Body:'));
     var spacer = mark ? '    ' : '  ';
     console.warn(body.split(/\r?\n/).map(function(line){
         return spacer + line;
