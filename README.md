@@ -41,11 +41,12 @@ hardenize <command>
 Commands:
   hardenize bash                      Show bash auto-completion script
   hardenize certs <command>           Manage certificates
-  hardenize config <command>          Manage configuration
+  hardenize config <command>          Manage configuration at Hardenize
   hardenize dns-zones <command>       Manage dns zones
   hardenize events <command>          Manage events
   hardenize groups <command>          Manage groups
   hardenize hosts <command>           Manage hosts
+  hardenize local_config <command>    Manage local configuration
   hardenize network-ranges <command>  Manage network ranges
   hardenize reports0 <command>        Manage reports (unstable)
   hardenize suborgs <command>         Manage organizations
@@ -109,10 +110,10 @@ Options:
 ### Configuration
 
 Before you can run most commands, you will need to configure your credentials and
-a few other things by running `hardenize config init`
+a few other things by running `hardenize local_config init`
 
 ```shell
-$ hardenize config init
+$ hardenize local_config init
 * API Username: your api username
 * API Password: your api password
   Default organization: your default org
