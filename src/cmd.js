@@ -48,6 +48,21 @@ function api(argv) {
 
     var api = new HardenizeApi(apiConfig);
     if (argv.debug) debug(api);
+
+    // Wrap the API, to force it to request all pages in one go
+    api.wrapApiCall(function(){
+        var args    = Array.prototype.slice.call(arguments);
+        var wrapped = args.pop();
+        return wrapped.apply(this, args)
+            .then(function(response){
+                if (response.pages && typeof response.fetchResults === 'function') {
+                    return response.fetchResults();
+                } else {
+                    return response;
+                }
+            });
+    });
+
     return api;
 }
 

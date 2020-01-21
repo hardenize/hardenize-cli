@@ -3,23 +3,22 @@ var color = require('cli-color');
 module.exports = debug;
 
 function debug(api) {
-    var start_time;
     api.on('request', function(req){
         start_time = Date.now();
-        console.warn(color.blue('\n**** DEBUG: Sending API Request (+0ms)\n'));
+        console.warn(color.blue('**** DEBUG: Sending HTTP Request (+0ms)\n'));
         console.warn('  ' + req.method + ' ' + req.url + '\n');
         debugHeaders(req.headers);
         debugBody(req.body, true);
         console.warn('');
     });
     api.on('response', function(res){
-        console.warn(color.blue('**** DEBUG: Received API Response (+' + (Date.now() - start_time) + 'ms)\n'));
+        console.warn(color.blue('**** DEBUG: Received HTTP Response (+' + (Date.now() - start_time) + 'ms)\n'));
         console.warn('  ' + res.status + ' ' + res.statusText + '\n');
         debugHeaders(res.headers);
         console.warn('');
     });
     api.on('body', function(body){
-        console.warn(color.blue('**** DEBUG: Received API Response Body (+' + (Date.now() - start_time) + 'ms)\n'));
+        console.warn(color.blue('**** DEBUG: Received HTTP Response Body (+' + (Date.now() - start_time) + 'ms)\n'));
         debugBody(body, false);
         console.warn('');
     });
