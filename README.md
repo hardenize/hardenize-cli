@@ -45,6 +45,7 @@ Commands:
   hardenize dns-zones <command>       Manage dns zones
   hardenize events <command>          Manage events
   hardenize groups <command>          Manage groups
+  hardenize hdb <command>             Search HDB
   hardenize hosts <command>           Manage hosts
   hardenize local_config <command>    Manage local configuration
   hardenize network-ranges <command>  Manage network ranges
