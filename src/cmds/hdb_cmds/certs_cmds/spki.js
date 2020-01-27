@@ -5,18 +5,16 @@ exports.command = 'spki <spki>';
 exports.desc = 'Search HDB for certificates by spki';
 
 exports.builder = function(yargs) {
-    yargs.option('pem',     { type: 'boolean', description: 'Include raw PEM'       });
-    yargs.option('expired', { type: 'boolean', description: 'Include expired certs' });
-    yargs.option('limit',   { type: 'integer', description: 'Limit results'         });
+    yargs.option('pem',   { type: 'boolean', description: 'Include raw PEM' });
+    yargs.option('limit', { type: 'integer', description: 'Limit results'   });
 }
 
 exports.handler = function hdb_certs_spki_handler(argv) {
 
     var options = {};
 
-    if (argv.pem)     options.pem     = true;
-    if (argv.expired) options.expired = true;
-    if (argv.limit)   options.limit   = argv.limit;
+    if (argv.pem)   options.pem   = true;
+    if (argv.limit) options.limit = argv.limit;
 
     cmd.api(argv).getHdbCertsBySpki(argv.spki, options)
         .then(function(response){
