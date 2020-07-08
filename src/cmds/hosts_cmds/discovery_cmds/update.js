@@ -5,9 +5,8 @@ exports.command = 'update <ids...>';
 exports.desc = 'Updates host discoveries';
 
 exports.builder = function(yargs) {
-    yargs.option('resolution',         { type: 'string',  description: 'Resolution to set', required: true });
-    yargs.option('effective-hostname', { type: 'string',  description: 'Effective hostname to set (only valid when updating a single discovery, and preview isn\'t set)' });
-    yargs.option('preview',            { type: 'boolean', description: 'Do not apply changes. Just return a list of discoveries that would have been affected' });
+    yargs.option('resolution', { type: 'string',  description: 'Resolution to set', required: true });
+    yargs.option('preview',    { type: 'boolean', description: 'Do not apply changes. Just return a list of discoveries that would have been affected' });
 };
 
 exports.handler = function update_host_discoveries_handler(argv) {
@@ -15,9 +14,8 @@ exports.handler = function update_host_discoveries_handler(argv) {
     var changes = {};
     var opt     = {};
 
-    if (argv.resolution)  changes.resolution = argv.resolution;
-    if (argv.effectiveHostname) changes.effectiveHostname = argv.effectiveHostname;
-    if (argv.preview) opt.preview = true;
+    if (argv.resolution) changes.resolution = argv.resolution;
+    if (argv.preview)    opt.preview = true;
 
     if (argv.ids.length === 1 && !argv.preview) {
         cmd.api(argv).updateHostDiscovery(argv.ids[0], changes)
