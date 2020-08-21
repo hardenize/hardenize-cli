@@ -20,7 +20,7 @@
     "build-openapi": "cd openapi && ./build.sh"
   },
   "dependencies": {
-    "@hardenize/api": "^1.9.0",
+    "@hardenize/api": "^1.10.0",
     "cli-color": "^2.0.0",
     "cli-table": "^0.3.1",
     "cloudflare": "git+https://github.com/hardenize/node-cloudflare.git#bind-config-plus-updates",
