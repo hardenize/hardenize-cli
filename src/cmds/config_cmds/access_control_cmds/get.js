@@ -2,10 +2,10 @@ var cmd = require('../../../cmd');
 
 exports.command = 'get';
 
-exports.desc = 'Get Management IP Whitelist Config';
+exports.desc = 'Get Access Control Config';
 
-exports.handler = function get_mgmt_ip_whitelist_handler(argv) {
-    cmd.api(argv).getManagementIpWhitelist()
+exports.handler = function get_access_control_handler(argv) {
+    cmd.api(argv).getAccessControlConfig()
         .then(function(response){
             cmd.displayResults(argv, response.data);
         })
