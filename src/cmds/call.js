@@ -86,6 +86,8 @@ function call_api(argv, fetchOptions, qsOptions) {
                     }
                 }
                 cmd.displayResults(argv, data);
+            } else if (data instanceof Buffer) {
+                process.stdout.write(data);
             } else if (data) {
                 console.log(data);
             } else {
