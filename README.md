@@ -140,4 +140,4 @@ configs `default_format` option, or `table` if that does not exist.
 ## Development
 
 If you are a core developer of this library (you almost certainly aren't, unless you work for
-Hardenize Limited), you should check out [DEVELOPMENT.md](https://github.com/hardenize/hardenize-cli/blob/master/DEVELOPMENT.md)
+Hardenize Limited), you should check out [DEVELOPMENT.md](https://github.com/hardenize/hardenize-cli/blob/dev/DEVELOPMENT.md)
