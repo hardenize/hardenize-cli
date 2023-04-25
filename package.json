@@ -26,7 +26,7 @@
     "cloudflare": "git+https://github.com/hardenize/node-cloudflare.git#bind-config-plus-updates",
     "json2csv": "^4.5.4",
     "wrap-ansi": "^6.2.0",
-    "yaml": "^1.10.0",
+    "yaml": "^2.2.2",
     "yargs": "^15.4.1"
   }
 }
